@@ -634,17 +634,13 @@ Podatki za pricing:
 Napiši strokovno analizo zakaj priporočamo te cene — v slovenščini, 4-5 stavkov. Bodi konkreten in vezan na dejanske faktorje. Ne povzemaj cen, razloži ZAKAJ.`;
 
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          model:'claude-sonnet-4-6',
-          max_tokens:1000,
-          messages:[{role:'user',content:prompt}]
-        })
-      });
-      const data = await res.json();
-      const text = data.content?.find(b=>b.type==='text')?.text || 'Napaka pri generiranju analize.';
+  const res = await fetch('/api/ai', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({ prompt: prompt })
+});
+const data = await res.json();
+const text = data.text || 'Napaka pri generiranju analize.';
       setReasoning(text);
       setGenerated(true);
     } catch(e){
