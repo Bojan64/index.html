@@ -33,20 +33,8 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html, body {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-  }
-
-  body {
-    font-family: 'Nunito', sans-serif;
-    background: var(--gray-50);
-    color: var(--navy);
-    min-width: 0;
-  }
-
+  html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+  body { font-family: 'Nunito', sans-serif; background: var(--gray-50); color: var(--navy); min-width: 0; }
   img, canvas, svg, video { max-width: 100%; }
   h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; }
 
@@ -85,12 +73,7 @@
     color: var(--gold);
     margin-top: 4px;
   }
-  .auth-logo .divider {
-    width: 40px;
-    height: 2px;
-    background: var(--gold);
-    margin: 12px auto;
-  }
+  .auth-logo .divider { width: 40px; height: 2px; background: var(--gold); margin: 12px auto; }
 
   .form-group { margin-bottom: 20px; }
   .form-group label {
@@ -114,16 +97,9 @@
     font-size: 14px;
     color: var(--navy);
     background: var(--white);
-    transition: border-color 0.2s;
-  }
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus,
-  .event-search input:focus {
-    outline: none;
-    border-color: var(--gold);
   }
 
+  .btn-primary, .btn-gold, .btn-outline, .btn-sm, .btn-danger-sm { cursor: pointer; }
   .btn-primary {
     width: 100%;
     padding: 13px;
@@ -136,11 +112,7 @@
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    cursor: pointer;
-    transition: background 0.2s;
   }
-  .btn-primary:hover { background: var(--navy-light); }
-
   .btn-gold {
     padding: 10px 20px;
     background: var(--gold);
@@ -150,11 +122,7 @@
     font-family: 'Nunito', sans-serif;
     font-size: 13px;
     font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s;
   }
-  .btn-gold:hover { background: var(--gold-light); }
-
   .btn-outline {
     padding: 8px 16px;
     background: transparent;
@@ -164,11 +132,7 @@
     font-family: 'Nunito', sans-serif;
     font-size: 12px;
     font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
   }
-  .btn-outline:hover { background: var(--navy); color: var(--white); }
-
   .btn-sm {
     padding: 6px 14px;
     background: var(--gray-100);
@@ -178,10 +142,7 @@
     font-family: 'Nunito', sans-serif;
     font-size: 12px;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
   }
-
   .btn-danger-sm {
     padding: 6px 14px;
     background: var(--red-light);
@@ -191,24 +152,11 @@
     font-family: 'Nunito', sans-serif;
     font-size: 12px;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
   }
 
-  .error-msg {
-    color: var(--red);
-    font-size: 13px;
-    margin-top: 12px;
-    text-align: center;
-  }
+  .error-msg { color: var(--red); font-size: 13px; margin-top: 12px; text-align: center; }
 
-  .app-shell {
-    display: flex;
-    min-height: 100vh;
-    width: 100%;
-    min-width: 0;
-  }
-
+  .app-shell { display: flex; min-height: 100vh; width: 100%; min-width: 0; }
   .sidebar {
     width: 240px;
     min-width: 240px;
@@ -223,7 +171,6 @@
     overflow-y: auto;
     z-index: 100;
   }
-
   .sidebar-logo {
     padding: 28px 24px 20px;
     border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -241,19 +188,13 @@
     color: var(--gold);
     margin-top: 2px;
   }
-
   .sidebar-hotel {
     padding: 16px 24px;
     border-bottom: 1px solid rgba(255,255,255,0.08);
     font-size: 12px;
     color: rgba(255,255,255,0.5);
   }
-  .sidebar-hotel strong {
-    display: block;
-    color: var(--white);
-    font-size: 13px;
-    margin-bottom: 2px;
-  }
+  .sidebar-hotel strong { display: block; color: var(--white); font-size: 13px; margin-bottom: 2px; }
   .sidebar-hotel .badge {
     display: inline-block;
     background: var(--gold);
@@ -285,10 +226,8 @@
     font-weight: 500;
     color: rgba(255,255,255,0.6);
     cursor: pointer;
-    transition: all 0.15s;
     border-left: 3px solid transparent;
   }
-  .nav-item:hover { color: var(--white); background: rgba(255,255,255,0.05); }
   .nav-item.active {
     color: var(--white);
     background: rgba(180,148,72,0.12);
@@ -301,15 +240,9 @@
     border-top: 1px solid rgba(255,255,255,0.08);
     font-size: 12px;
     color: rgba(255,255,255,0.4);
-    cursor: pointer;
   }
 
-  .main {
-    margin-left: 240px;
-    flex: 1;
-    min-width: 0;
-  }
-
+  .main { margin-left: 240px; flex: 1; min-width: 0; }
   .topbar {
     background: var(--white);
     border-bottom: 1px solid var(--gray-200);
@@ -324,34 +257,12 @@
     z-index: 50;
     min-width: 0;
   }
-
-  .topbar-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--navy);
-  }
-  .topbar-meta {
-    font-size: 12px;
-    color: var(--gray-400);
-    margin-top: 2px;
-  }
-  .topbar-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    min-width: 0;
-  }
+  .topbar-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--navy); }
+  .topbar-meta { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+  .topbar-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0; }
 
   .page-content { padding: 28px 32px; min-width: 0; }
-
-  .mobile-tabs {
-    display: none;
-    gap: 8px;
-    padding: 0 0 16px;
-    flex-wrap: wrap;
-  }
+  .mobile-tabs { display: none; gap: 8px; padding: 0 0 16px; flex-wrap: wrap; }
   .mobile-tabs button {
     border: 1px solid var(--gray-200);
     background: var(--white);
@@ -361,11 +272,7 @@
     font-size: 13px;
     font-weight: 700;
   }
-  .mobile-tabs button.active {
-    background: var(--navy);
-    color: var(--white);
-    border-color: var(--navy);
-  }
+  .mobile-tabs button.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
 
   .card {
     background: var(--white);
@@ -386,26 +293,9 @@
     min-width: 0;
   }
 
-  .grid-4 {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
-    min-width: 0;
-  }
-  .grid-2 {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
-    margin-bottom: 24px;
-    min-width: 0;
-  }
-  .grid-3 {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
-    min-width: 0;
-  }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 24px; min-width: 0; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-bottom: 24px; min-width: 0; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; min-width: 0; }
 
   .kpi-tile {
     background: var(--white);
@@ -430,27 +320,16 @@
     line-height: 1;
     overflow-wrap: anywhere;
   }
-  .kpi-sub {
-    font-size: 12px;
-    color: var(--gray-400);
-    margin-top: 6px;
-    overflow-wrap: anywhere;
-  }
+  .kpi-sub { font-size: 12px; color: var(--gray-400); margin-top: 6px; overflow-wrap: anywhere; }
   .kpi-change { font-size: 12px; font-weight: 700; margin-top: 4px; }
   .kpi-change.up { color: var(--green); }
 
-  .kpi-tile.highlight {
-    background: var(--navy);
-    border-color: var(--navy);
-  }
+  .kpi-tile.highlight { background: var(--navy); border-color: var(--navy); }
   .kpi-tile.highlight .kpi-label { color: rgba(255,255,255,0.5); }
   .kpi-tile.highlight .kpi-value { color: var(--gold-light); }
   .kpi-tile.highlight .kpi-sub { color: rgba(255,255,255,0.4); }
 
-  .pricing-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
+  .pricing-table { width: 100%; border-collapse: collapse; }
   .pricing-table th {
     text-align: left;
     padding: 10px 14px;
@@ -470,17 +349,8 @@
     overflow-wrap: anywhere;
   }
 
-  .price-rec {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--navy);
-  }
-  .price-base {
-    font-size: 12px;
-    color: var(--gray-400);
-    text-decoration: line-through;
-  }
+  .price-rec { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: var(--navy); }
+  .price-base { font-size: 12px; color: var(--gray-400); text-decoration: line-through; }
   .price-delta { font-size: 12px; font-weight: 700; }
   .price-delta.up { color: var(--green); }
   .price-delta.down { color: var(--red); }
@@ -526,29 +396,11 @@
     padding: 20px;
     min-width: 0;
   }
-  .weather-temp {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 48px;
-    font-weight: 700;
-    line-height: 1;
-  }
-  .weather-desc {
-    font-size: 13px;
-    color: rgba(255,255,255,0.6);
-    margin-top: 4px;
-  }
-  .weather-row {
-    display: flex;
-    gap: 16px;
-    margin-top: 16px;
-    flex-wrap: wrap;
-  }
+  .weather-temp { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 700; line-height: 1; }
+  .weather-desc { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+  .weather-row { display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
   .weather-item { font-size: 12px; color: rgba(255,255,255,0.5); }
-  .weather-item strong {
-    color: var(--white);
-    display: block;
-    font-size: 14px;
-  }
+  .weather-item strong { color: var(--white); display: block; font-size: 14px; }
 
   .competitor-card {
     border: 1px solid var(--gray-200);
@@ -561,20 +413,9 @@
     min-width: 0;
   }
 
-  .comp-name {
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--navy);
-    overflow-wrap: anywhere;
-  }
+  .comp-name { font-weight: 700; font-size: 14px; color: var(--navy); overflow-wrap: anywhere; }
   .comp-type { font-size: 11px; color: var(--gray-400); }
-  .comp-price {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--navy);
-    text-align: right;
-  }
+  .comp-price { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 700; color: var(--navy); text-align: right; }
   .comp-vs { font-size: 11px; font-weight: 700; }
   .comp-vs.above { color: var(--green); }
   .comp-vs.below { color: var(--red); }
@@ -587,97 +428,15 @@
     border-bottom: 1px solid var(--gray-100);
     min-width: 0;
   }
-
-  .event-date {
-    min-width: 50px;
-    text-align: center;
-  }
-  .event-date .day {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 1;
-    color: var(--navy);
-  }
-  .event-date .month {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--gray-400);
-  }
-
+  .event-date { min-width: 50px; text-align: center; }
+  .event-date .day { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; line-height: 1; color: var(--navy); }
+  .event-date .month { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); }
   .event-body { flex: 1; min-width: 0; }
-  .event-name {
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--navy);
-    overflow-wrap: anywhere;
-  }
-  .event-loc {
-    font-size: 12px;
-    color: var(--gray-400);
-    margin-top: 2px;
-    overflow-wrap: anywhere;
-  }
+  .event-name { font-weight: 700; font-size: 14px; color: var(--navy); overflow-wrap: anywhere; }
+  .event-loc { font-size: 12px; color: var(--gray-400); margin-top: 2px; overflow-wrap: anywhere; }
 
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 200;
-    padding: 16px;
-  }
-  .modal {
-    background: var(--white);
-    border-radius: 12px;
-    padding: 32px;
-    width: min(480px, 100%);
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 32px 80px rgba(0,0,0,0.25);
-  }
-  .modal-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--navy);
-    margin-bottom: 24px;
-  }
-  .modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 24px;
-    flex-wrap: wrap;
-  }
-
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--gold-pale);
-    color: var(--navy);
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-  }
-
-  .chart-wrap {
-    position: relative;
-    height: 220px;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-  }
-
-  .scroll-wrap {
-    overflow-x: auto;
-    max-width: 100%;
-  }
+  .chart-wrap { position: relative; height: 220px; width: 100%; max-width: 100%; min-width: 0; }
+  .scroll-wrap { overflow-x: auto; max-width: 100%; }
 
   .factor-row {
     display: flex;
@@ -689,24 +448,13 @@
     gap: 12px;
   }
   .factor-row:last-child { border-bottom: none; }
-  .factor-name {
-    color: var(--gray-600);
-    min-width: 0;
-    overflow-wrap: anywhere;
-  }
-  .factor-val {
-    font-weight: 700;
-    white-space: nowrap;
-  }
+  .factor-name { color: var(--gray-600); min-width: 0; overflow-wrap: anywhere; }
+  .factor-val { font-weight: 700; white-space: nowrap; }
   .factor-val.pos { color: var(--green); }
   .factor-val.neg { color: var(--red); }
   .factor-val.zero { color: var(--gray-400); }
 
-  .local-events {
-    margin-top: 16px;
-    display: grid;
-    gap: 12px;
-  }
+  .local-events { margin-top: 16px; display: grid; gap: 12px; }
   .local-event-card {
     border: 1px solid var(--gray-200);
     border-radius: 10px;
@@ -718,48 +466,15 @@
     gap: 16px;
     min-width: 0;
   }
-  .local-event-main {
-    min-width: 0;
-    flex: 1;
-  }
-  .local-event-name {
-    font-weight: 700;
-    color: var(--navy);
-    font-size: 14px;
-    overflow-wrap: anywhere;
-  }
-  .local-event-meta {
-    font-size: 12px;
-    color: var(--gray-400);
-    margin-top: 2px;
-    overflow-wrap: anywhere;
-  }
+  .local-event-main { min-width: 0; flex: 1; }
+  .local-event-name { font-weight: 700; color: var(--navy); font-size: 14px; overflow-wrap: anywhere; }
+  .local-event-meta { font-size: 12px; color: var(--gray-400); margin-top: 2px; overflow-wrap: anywhere; }
 
-  .event-search {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 14px;
-    flex-wrap: wrap;
-  }
-  .event-search input {
-    flex: 1;
-    min-width: 220px;
-  }
+  .event-search { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .event-search input { flex: 1; min-width: 220px; }
 
-  .empty-state {
-    text-align: center;
-    padding: 40px;
-    color: var(--gray-400);
-    font-size: 14px;
-  }
-
-  .badge-pill {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
-  }
+  .empty-state { text-align: center; padding: 40px; color: var(--gray-400); font-size: 14px; }
+  .badge-pill { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
   .badge-demo { background: var(--gold-pale); color: var(--gold); }
 
   @media (max-width: 900px) {
@@ -833,14 +548,20 @@ function buildDemoReservations() {
 }
 const DEMO_RESERVATIONS = buildDemoReservations();
 
+const DEMO_EVENTS = [
+  { id: 1, name: 'Okusiti Slovenijo', date: '2026-07-04', end_date: '2026-07-06', event_type: 'festival', location: 'Bled', impact_multiplier: 1.18, expected_demand: 'high', city: 'Bled' },
+  { id: 2, name: 'Bled Strategic Forum', date: '2026-09-02', end_date: '2026-09-04', event_type: 'conference', location: 'Bled', impact_multiplier: 1.35, expected_demand: 'very_high', city: 'Bled' },
+  { id: 3, name: 'Triglav Trail', date: '2026-07-18', end_date: '2026-07-19', event_type: 'sports', location: 'Bled', impact_multiplier: 1.22, expected_demand: 'high', city: 'Bled' },
+  { id: 4, name: 'Ljubljana Festival', date: '2026-07-11', end_date: '2026-07-13', event_type: 'festival', location: 'Ljubljana', impact_multiplier: 1.08, expected_demand: 'medium', city: 'Ljubljana' },
+  { id: 5, name: 'Poletni kongres HGS', date: '2026-06-25', end_date: '2026-06-26', event_type: 'conference', location: 'Bled', impact_multiplier: 1.15, expected_demand: 'medium', city: 'Bled' },
+];
+
 const SLO_HOLIDAYS = ['01-01','02-08','04-27','05-01','05-02','06-08','06-25','08-15','10-31','11-01','12-25','12-26'];
 
 function formatEUR(n) {
   return new Intl.NumberFormat('sl-SI', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n);
 }
-function fmt(n) {
-  return new Intl.NumberFormat('sl-SI').format(n);
-}
+function fmt(n) { return new Intl.NumberFormat('sl-SI').format(n); }
 
 function getOccupancyForDate(dateStr) {
   const r = DEMO_RESERVATIONS.find(d => d.date === dateStr);
@@ -896,7 +617,6 @@ function getPriceRecommendation(roomType, dateStr, weather, occ, benchmark) {
   return {
     price: Math.max(roomType.minPrice, Math.min(roomType.maxPrice, rawPrice)),
     factors,
-    totalAdj: Math.round(totalAdj * 100),
     capped: Math.abs(totalAdj) >= 0.119
   };
 }
@@ -1006,7 +726,7 @@ function WeatherWidget({ lat, lon }) {
   );
 }
 
-function Dashboard({ hotel, benchmark }) {
+function Dashboard({ hotel, benchmark, upcomingEvents }) {
   const chartRef = useRef(null);
   const chartInst = useRef(null);
   const today = new Date().toISOString().split('T')[0];
@@ -1015,7 +735,6 @@ function Dashboard({ hotel, benchmark }) {
   const totalRev = last30.reduce((s, r) => s + r.revenue, 0);
   const avgOcc = Math.round(last30.reduce((s, r) => s + r.occupiedRooms, 0) / last30.length);
   const avgOccPct = Math.round(avgOcc / hotel.rooms * 100);
-
   const superiorRoom = hotel.roomTypes.find(rt => rt.id === 'su') || hotel.roomTypes[1];
   const todayResult = getPriceRecommendation(superiorRoom, today, null, occ.pct, benchmark);
 
@@ -1049,8 +768,6 @@ function Dashboard({ hotel, benchmark }) {
       }
     });
   }, []);
-
-  const upcoming = DEMO_EVENTS.filter(e => e.end_date >= today).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 3);
 
   return (
     <div>
@@ -1086,7 +803,7 @@ function Dashboard({ hotel, benchmark }) {
           <WeatherWidget lat={hotel.lat} lon={hotel.lon} />
           <div className="card" style={{ flex: 1, minWidth: 0 }}>
             <div className="card-title">🗓️ Prihajajoči dogodki</div>
-            {upcoming.map(ev => (
+            {upcomingEvents.length ? upcomingEvents.map(ev => (
               <div key={ev.id} className="event-item">
                 <div className="event-date">
                   <div className="day">{new Date(ev.date).getDate()}</div>
@@ -1098,7 +815,7 @@ function Dashboard({ hotel, benchmark }) {
                 </div>
                 <span className="tag tag-med">+{Math.round((ev.impact_multiplier - 1) * 100)}%</span>
               </div>
-            ))}
+            )) : <div className="empty-state">Ni prihajajočih dogodkov.</div>}
           </div>
         </div>
       </div>
@@ -1125,11 +842,7 @@ function PricingEngine({ hotel, benchmark }) {
   }, [selectedDate]);
 
   const occ = getOccupancyForDate(selectedDate);
-  const recs = hotel.roomTypes.map(rt => ({
-    ...rt,
-    ...getPriceRecommendation(rt, selectedDate, weather, occ.pct, benchmark),
-  }));
-
+  const recs = hotel.roomTypes.map(rt => ({ ...rt, ...getPriceRecommendation(rt, selectedDate, weather, occ.pct, benchmark) }));
   const superiorRec = recs.find(r => r.id === 'su') || recs[1];
 
   const date = new Date(selectedDate);
@@ -1144,14 +857,11 @@ function PricingEngine({ hotel, benchmark }) {
     setLoadingAI(true);
     setReasoning('');
     setGenerated(false);
-
-    const prompt = `Si AI revenue manager za hotel ${hotel.name} v ${hotel.location}. Analiziraj datum ${selectedDate}.`;
-
     try {
       const res = await fetch('/api/ai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt })
+        body: JSON.stringify({ prompt: `Si AI revenue manager za hotel ${hotel.name} v ${hotel.location}. Analiziraj datum ${selectedDate}.` })
       });
       const data = await res.json();
       setReasoning(data.text || 'Napaka pri generiranju analize.');
@@ -1167,12 +877,7 @@ function PricingEngine({ hotel, benchmark }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, flexWrap: 'wrap' }}>
         <div>
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8892a8', marginBottom: 6 }}>Datum analize</div>
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={e => setSelectedDate(e.target.value)}
-            style={{ padding: '10px 14px', border: '1px solid #dde1eb', borderRadius: 8, fontFamily: 'Nunito', fontSize: 14, color: '#162040', maxWidth: '100%' }}
-          />
+          <input type="date" value={selectedDate} onChange={e => setSelectedDate(e.target.value)} style={{ padding: '10px 14px', border: '1px solid #dde1eb', borderRadius: 8, fontFamily: 'Nunito', fontSize: 14, color: '#162040', maxWidth: '100%' }} />
         </div>
         <div style={{ marginTop: 20, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <span className="chip">{dayOfWeek}</span>
@@ -1181,9 +886,7 @@ function PricingEngine({ hotel, benchmark }) {
           {isHoliday && <span className="chip" style={{ background: '#fdecea', color: '#c0392b' }}>Državni praznik</span>}
         </div>
         <div style={{ marginLeft: 'auto', marginTop: 20 }}>
-          <button className="btn-gold" onClick={generateReasoning} disabled={loadingAI}>
-            {loadingAI ? '⏳ Analiziram…' : '🤖 AI analiza'}
-          </button>
+          <button className="btn-gold" onClick={generateReasoning} disabled={loadingAI}>{loadingAI ? '⏳ Analiziram…' : '🤖 AI analiza'}</button>
         </div>
       </div>
 
@@ -1262,7 +965,9 @@ function PricingEngine({ hotel, benchmark }) {
             {superiorRec.factors.map((f, i) => (
               <div key={i} className="factor-row">
                 <span className="factor-name">{f.name}</span>
-                <span className={`factor-val ${f.val > 0 ? 'pos' : f.val < 0 ? 'neg' : 'zero'}`}>{f.val > 0 ? '+' : ''}{Math.round(f.val * 100)}%</span>
+                <span className={`factor-val ${f.val > 0 ? 'pos' : f.val < 0 ? 'neg' : 'zero'}`}>
+                  {f.val > 0 ? '+' : ''}{Math.round(f.val * 100)}%
+                </span>
               </div>
             ))}
           </div>
@@ -1285,7 +990,7 @@ function PricingEngine({ hotel, benchmark }) {
   );
 }
 
-function LocalEvents({ hotel }) {
+function LocalEvents() {
   const [eventLocation, setEventLocation] = useState('Bled, Slovenia');
   const [searchTerm, setSearchTerm] = useState('');
   const [apiEvents, setApiEvents] = useState([]);
@@ -1293,26 +998,32 @@ function LocalEvents({ hotel }) {
   const [eventError, setEventError] = useState('');
 
   useEffect(() => {
+    let active = true;
     async function loadEvents() {
       setEventLoading(true);
       setEventError('');
       try {
         const geo = await geocodeLocation(eventLocation);
         if (!geo) {
-          setApiEvents([]);
-          setEventError('Lokacije ni bilo mogoče najti.');
-          setEventLoading(false);
+          if (!active) return;
+          setApiEvents(DEMO_EVENTS);
+          setEventError('Lokacije ni bilo mogoče najti. Prikazujem demo dogodke.');
           return;
         }
         const events = await fetchNearbyEvents(geo.lat, geo.lon);
-        setApiEvents(events);
+        if (!active) return;
+        setApiEvents(events.length ? events : DEMO_EVENTS);
+        if (!events.length) setEventError('API trenutno nima zadetkov. Prikazujem demo dogodke.');
       } catch (e) {
-        setApiEvents([]);
-        setEventError('Napaka pri nalaganju dogodkov.');
+        if (!active) return;
+        setApiEvents(DEMO_EVENTS);
+        setEventError('Napaka pri nalaganju dogodkov. Prikazujem demo dogodke.');
+      } finally {
+        if (active) setEventLoading(false);
       }
-      setEventLoading(false);
     }
     loadEvents();
+    return () => { active = false; };
   }, [eventLocation]);
 
   const filteredEvents = apiEvents.filter(ev => {
@@ -1353,19 +1064,15 @@ function LocalEvents({ hotel }) {
       {eventError && <div className="empty-state">{eventError}</div>}
 
       <div className="local-events">
-        {!eventLoading && !eventError && filteredEvents.length > 0 ? filteredEvents.map(ev => (
+        {!eventLoading && filteredEvents.length > 0 ? filteredEvents.map(ev => (
           <div key={ev.id} className="local-event-card">
             <div className="local-event-main">
               <div className="local-event-name">{ev.name}</div>
-              <div className="local-event-meta">
-                {ev.city} · {ev.location} · {ev.event_type} · {ev.date}
-              </div>
+              <div className="local-event-meta">{ev.city} · {ev.location} · {ev.event_type} · {ev.date}</div>
             </div>
             <span className="tag tag-med">API</span>
           </div>
-        )) : !eventLoading && !eventError ? (
-          <div className="empty-state">Ni dogodkov za izbrani kriterij.</div>
-        ) : null}
+        )) : !eventLoading ? <div className="empty-state">Ni dogodkov za izbrani kriterij.</div> : null}
       </div>
     </div>
   );
@@ -1422,12 +1129,12 @@ function CompetitorRadar({ hotel, competitors, setCompetitors }) {
       </div>
 
       <div className="card">
-        <div className="section-header">
-          <div className="section-title">Konkurenti</div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+          <div className="card-title" style={{ marginBottom: 0 }}>Konkurenti</div>
           <button className="btn-gold" onClick={openAdd}>+ Dodaj konkurenta</button>
         </div>
 
-        <div style={{ display: 'grid', gap: 12 }}>
+        <div style={{ display: 'grid', gap: 12, marginTop: 20 }}>
           {competitors.map(c => (
             <div key={c.id} className="competitor-card">
               <div style={{ minWidth: 0 }}>
@@ -1485,10 +1192,16 @@ function CompetitorRadar({ hotel, competitors, setCompetitors }) {
 
 function App() {
   const [user, setUser] = useState(null);
-  const [tab, setTab] = useState('dashboard');
+  const [page, setPage] = useState('dashboard');
   const [hotel] = useState(DEMO_HOTEL);
   const [competitors, setCompetitors] = useState(DEMO_COMPETITORS);
   const benchmark = computeBenchmark(competitors);
+  const [upcomingEvents, setUpcomingEvents] = useState(DEMO_EVENTS);
+
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    setUpcomingEvents(DEMO_EVENTS.filter(e => e.end_date >= today).sort((a, b) => a.date.localeCompare(b.date)));
+  }, []);
 
   if (!user) return <LoginScreen onLogin={setUser} />;
 
@@ -1507,16 +1220,16 @@ function App() {
 
         <div className="sidebar-nav">
           <div className="nav-section">Pogled</div>
-          <div className={`nav-item ${tab === 'dashboard' ? 'active' : ''}`} onClick={() => setTab('dashboard')}>
+          <div className={`nav-item ${page === 'dashboard' ? 'active' : ''}`} onClick={() => setPage('dashboard')}>
             <span className="nav-icon">📈</span>Dashboard
           </div>
-          <div className={`nav-item ${tab === 'pricing' ? 'active' : ''}`} onClick={() => setTab('pricing')}>
+          <div className={`nav-item ${page === 'pricing' ? 'active' : ''}`} onClick={() => setPage('pricing')}>
             <span className="nav-icon">💶</span>Pricing Engine
           </div>
-          <div className={`nav-item ${tab === 'events' ? 'active' : ''}`} onClick={() => setTab('events')}>
+          <div className={`nav-item ${page === 'events' ? 'active' : ''}`} onClick={() => setPage('events')}>
             <span className="nav-icon">📍</span>Lokalni dogodki
           </div>
-          <div className={`nav-item ${tab === 'competitors' ? 'active' : ''}`} onClick={() => setTab('competitors')}>
+          <div className={`nav-item ${page === 'competitors' ? 'active' : ''}`} onClick={() => setPage('competitors')}>
             <span className="nav-icon">🎯</span>Competitor Radar
           </div>
         </div>
@@ -1528,7 +1241,7 @@ function App() {
         <div className="topbar">
           <div style={{ minWidth: 0 }}>
             <div className="topbar-title">
-              {tab === 'dashboard' ? 'Dashboard' : tab === 'pricing' ? 'Pricing Engine' : tab === 'events' ? 'Lokalni dogodki' : 'Competitor Radar'}
+              {page === 'dashboard' ? 'Dashboard' : page === 'pricing' ? 'Pricing Engine' : page === 'events' ? 'Lokalni dogodki' : 'Competitor Radar'}
             </div>
             <div className="topbar-meta">MHC Revenue · Upravljanje cen za hotel {hotel.name}</div>
           </div>
@@ -1540,16 +1253,16 @@ function App() {
 
         <div className="page-content">
           <div className="mobile-tabs">
-            <button className={tab === 'dashboard' ? 'active' : ''} onClick={() => setTab('dashboard')}>Dashboard</button>
-            <button className={tab === 'pricing' ? 'active' : ''} onClick={() => setTab('pricing')}>Pricing Engine</button>
-            <button className={tab === 'events' ? 'active' : ''} onClick={() => setTab('events')}>Lokalni dogodki</button>
-            <button className={tab === 'competitors' ? 'active' : ''} onClick={() => setTab('competitors')}>Competitor Radar</button>
+            <button className={page === 'dashboard' ? 'active' : ''} onClick={() => setPage('dashboard')}>Dashboard</button>
+            <button className={page === 'pricing' ? 'active' : ''} onClick={() => setPage('pricing')}>Pricing Engine</button>
+            <button className={page === 'events' ? 'active' : ''} onClick={() => setPage('events')}>Lokalni dogodki</button>
+            <button className={page === 'competitors' ? 'active' : ''} onClick={() => setPage('competitors')}>Competitor Radar</button>
           </div>
 
-          {tab === 'dashboard' && <Dashboard hotel={hotel} benchmark={benchmark} />}
-          {tab === 'pricing' && <PricingEngine hotel={hotel} benchmark={benchmark} />}
-          {tab === 'events' && <LocalEvents hotel={hotel} />}
-          {tab === 'competitors' && <CompetitorRadar hotel={hotel} competitors={competitors} setCompetitors={setCompetitors} />}
+          {page === 'dashboard' && <Dashboard hotel={hotel} benchmark={benchmark} upcomingEvents={upcomingEvents} />}
+          {page === 'pricing' && <PricingEngine hotel={hotel} benchmark={benchmark} />}
+          {page === 'events' && <LocalEvents />}
+          {page === 'competitors' && <CompetitorRadar hotel={hotel} competitors={competitors} setCompetitors={setCompetitors} />}
         </div>
       </main>
     </div>
