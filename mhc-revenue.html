@@ -842,4 +842,761 @@
     .grid-3 { grid-template-columns: 1fr; }
     .mobile-tabs { display: flex; }
     .topbar { padding: 16px 18px; }
-    .page-content { padding: 
+    .page-content { padding: 18px; }
+  }
+
+  @media (max-width: 480px) {
+    .grid-4 { grid-template-columns: 1fr; }
+    .auth-card { padding: 28px 20px; }
+    .card { padding: 18px; }
+    .kpi-value { font-size: 28px; }
+    .weather-temp { font-size: 40px; }
+    .topbar-title { font-size: 20px; }
+    .modal { padding: 22px; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const DEMO_HOTEL = {
+  id: 'vila-bled',
+  name: 'Vila Bled',
+  location: 'Bled, Slovenija',
+  lat: 46.37,
+  lon: 14.09,
+  rooms: 30,
+  roomTypes: [
+    { id: 'st', name: 'Soba s pogledom na jezero', count: 12, basePrice: 336, minPrice: 240, maxPrice: 500 },
+    { id: 'su', name: 'Superior', count: 10, basePrice: 313, minPrice: 220, maxPrice: 460 },
+    { id: 'jn', name: 'Suita s pogledom na jezero', count: 5, basePrice: 386, minPrice: 280, maxPrice: 580 },
+    { id: 'dt', name: 'Suita Deluxe', count: 3, basePrice: 486, minPrice: 360, maxPrice: 720 },
+  ]
+};
+
+const DEMO_COMPETITORS = [
+  { id: 1, name: 'Grand Hotel Toplice', type: 'Direktna konkurenca', stars: 5, avgPrice: 290, threat: 'high', notes: 'Referenčna točka za višje segmente' },
+  { id: 2, name: 'Hotel Jezero', type: 'Direktna konkurenca', stars: 4, avgPrice: 195, threat: 'high', notes: 'Zelo podobna ponudba, aktivno znižuje cene' },
+  { id: 3, name: 'Triglav Bled', type: 'Direktna konkurenca', stars: 4, avgPrice: 170, threat: 'med', notes: 'Budget-friendly, dela pritisk navzdol' },
+  { id: 4, name: 'Penzion Mayer', type: 'Posredna konkurenca', stars: 3, avgPrice: 110, threat: 'low', notes: '' },
+];
+
+function buildDemoReservations() {
+  const data = [];
+  const today = new Date();
+  for (let i = -60; i <= 90; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() + i);
+    const dayOfYear = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
+    const seasonal = 1 + 0.6 * Math.sin((dayOfYear / 365) * 2 * Math.PI - 1.5);
+    const rooms = Math.round(DEMO_HOTEL.rooms * 0.5 * seasonal + Math.random() * 8 - 4);
+    data.push({
+      date: d.toISOString().split('T')[0],
+      occupiedRooms: Math.max(0, Math.min(rooms, DEMO_HOTEL.rooms)),
+      revenue: rooms * 220 * seasonal
+    });
+  }
+  return data;
+}
+const DEMO_RESERVATIONS = buildDemoReservations();
+
+const DEMO_EVENTS = [
+  { id: 1, name: 'Okusiti Slovenijo', date: '2026-07-04', end_date: '2026-07-06', event_type: 'festival', location: 'Bled', impact_multiplier: 1.18, expected_demand: 'high', city: 'Bled' },
+  { id: 2, name: 'Bled Strategic Forum', date: '2026-09-02', end_date: '2026-09-04', event_type: 'conference', location: 'Bled', impact_multiplier: 1.35, expected_demand: 'very_high', city: 'Bled' },
+  { id: 3, name: 'Triglav Trail', date: '2026-07-18', end_date: '2026-07-19', event_type: 'sports', location: 'Bled', impact_multiplier: 1.22, expected_demand: 'high', city: 'Bled' },
+  { id: 4, name: 'Ljubljana Festival', date: '2026-07-11', end_date: '2026-07-13', event_type: 'festival', location: 'Ljubljana', impact_multiplier: 1.08, expected_demand: 'medium', city: 'Ljubljana' },
+  { id: 5, name: 'Poletni kongres HGS', date: '2026-06-25', end_date: '2026-06-26', event_type: 'conference', location: 'Bled', impact_multiplier: 1.15, expected_demand: 'medium', city: 'Bled' },
+];
+
+const SLO_HOLIDAYS = ['01-01','02-08','04-27','05-01','05-02','06-08','06-25','08-15','10-31','11-01','12-25','12-26'];
+
+function formatEUR(n) {
+  return new Intl.NumberFormat('sl-SI', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n);
+}
+function fmt(n) {
+  return new Intl.NumberFormat('sl-SI').format(n);
+}
+
+function getOccupancyForDate(dateStr) {
+  const r = DEMO_RESERVATIONS.find(d => d.date === dateStr);
+  if (!r) return { pct: 0, rooms: 0 };
+  return { pct: Math.round(r.occupiedRooms / DEMO_HOTEL.rooms * 100), rooms: r.occupiedRooms };
+}
+
+const SUPERIOR_BASE = 313;
+
+function computeBenchmark(competitors) {
+  const direct = competitors.filter(c => c.type === 'Direktna konkurenca');
+  const pool = direct.length ? direct : competitors;
+  if (!pool.length) return 240;
+  return Math.round(pool.reduce((s, c) => s + c.avgPrice, 0) / pool.length);
+}
+
+function getPriceRecommendation(roomType, dateStr, weather, occ, benchmark) {
+  const date = new Date(dateStr);
+  const month = date.getMonth() + 1;
+  const dayOfWeek = date.getDay();
+  const mmdd = `${String(month).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  let factors = [];
+
+  if ([7, 8].includes(month)) factors.push({ name: 'Peak sezona (jul/avg)', val: 0.08 });
+  else if ([6, 9].includes(month)) factors.push({ name: 'Predsezona (jun/sep)', val: 0.03 });
+  else if ([12, 3].includes(month)) factors.push({ name: 'Ski sezona (dec/mar)', val: 0.02 });
+  else if ([1, 2].includes(month)) factors.push({ name: 'Mrtva sezona (jan/feb)', val: -0.10 });
+  else if ([11].includes(month)) factors.push({ name: 'Nizka sezona (nov)', val: -0.06 });
+
+  if ([5, 6].includes(dayOfWeek)) factors.push({ name: 'Vikend', val: 0.03 });
+  if (SLO_HOLIDAYS.includes(mmdd)) factors.push({ name: 'Državni praznik', val: 0.05 });
+
+  if (occ >= 90) factors.push({ name: 'Zasedenost >=90%', val: 0.05 });
+  else if (occ >= 80) factors.push({ name: 'Zasedenost >=80%', val: 0.03 });
+  else if (occ >= 65) factors.push({ name: 'Zasedenost >=65%', val: 0.01 });
+  else if (occ < 35) factors.push({ name: 'Nizka zasedenost', val: -0.04 });
+  else if (occ < 20) factors.push({ name: 'Zelo nizka zasedenost', val: -0.07 });
+
+  if (weather?.weathercode !== undefined) {
+    const wc = weather.weathercode;
+    if (wc === 0 || wc === 1) factors.push({ name: 'Sončno vreme', val: 0.01 });
+    else if (wc >= 61) factors.push({ name: 'Dežuje', val: -0.01 });
+  }
+
+  let totalAdj = factors.reduce((s, f) => s + f.val, 0);
+  totalAdj = Math.max(-0.12, Math.min(0.12, totalAdj));
+
+  const marketBase = (benchmark || 240) * 1.10;
+  const superiorPrice = Math.round(marketBase * (1 + totalAdj) / 5) * 5;
+  const roomRatio = roomType.basePrice / SUPERIOR_BASE;
+  const rawPrice = Math.round(superiorPrice * roomRatio / 5) * 5;
+
+  return {
+    price: Math.max(roomType.minPrice, Math.min(roomType.maxPrice, rawPrice)),
+    factors,
+    totalAdj: Math.round(totalAdj * 100),
+    capped: Math.abs(totalAdj) >= 0.119
+  };
+}
+
+function LoginScreen({ onLogin }) {
+  const [email, setEmail] = useState('admin@mhc-ai.eu');
+  const [pass, setPass] = useState('demo2025');
+  const [err, setErr] = useState('');
+
+  function handleLogin(e) {
+    e.preventDefault();
+    if (email === 'admin@mhc-ai.eu' && pass === 'demo2025') onLogin('admin');
+    else if (email === 'hotel@vilabled.si' && pass === 'vilabled') onLogin('hotel');
+    else setErr('Napačni podatki. Demo: admin@mhc-ai.eu / demo2025');
+  }
+
+  return (
+    <div className="auth-screen">
+      <div className="auth-card">
+        <div className="auth-logo">
+          <div className="brand">MHC REVENUE</div>
+          <div className="sub">Revenue Management Platform</div>
+          <div className="divider"></div>
+        </div>
+        <form onSubmit={handleLogin}>
+          <div className="form-group">
+            <label>E-pošta</label>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} />
+          </div>
+          <div className="form-group">
+            <label>Geslo</label>
+            <input type="password" value={pass} onChange={e => setPass(e.target.value)} />
+          </div>
+          <button type="submit" className="btn-primary">Prijava</button>
+          {err && <div className="error-msg">{err}</div>}
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function WeatherWidget({ lat, lon }) {
+  const [weather, setWeather] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=precipitation_sum,weathercode&timezone=Europe%2FBerlin&forecast_days=3`)
+      .then(r => r.json())
+      .then(d => { setWeather(d); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, [lat, lon]);
+
+  const WC_DESC = { 0: 'Jasno', 1: 'Pretežno jasno', 2: 'Delno oblačno', 3: 'Oblačno', 45: 'Megla', 61: 'Lahek dež', 63: 'Zmeren dež', 65: 'Plohe', 71: 'Lahek sneg', 80: 'Plohe', 95: 'Nevihta' };
+  const WC_ICON = { 0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️', 45: '🌫️', 61: '🌧️', 63: '🌧️', 71: '❄️', 80: '🌦️', 95: '⛈️' };
+
+  if (loading) return <div className="weather-widget" style={{ padding: 20, fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>Nalagam vreme…</div>;
+  if (!weather?.current_weather) return <div className="weather-widget" style={{ padding: 20, fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>Vreme ni na voljo.</div>;
+
+  const cw = weather.current_weather;
+  const icon = WC_ICON[cw.weathercode] || '🌡️';
+  const desc = WC_DESC[cw.weathercode] || 'Neznano';
+
+  return (
+    <div className="weather-widget">
+      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 12, display: 'flex', justifyContent: 'space-between', gap: 10 }}>
+        <span>📍 Bled, SLO</span><span>Open-Meteo</span>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
+        <span style={{ fontSize: 40 }}>{icon}</span>
+        <div style={{ minWidth: 0 }}>
+          <div className="weather-temp">{Math.round(cw.temperature)}°C</div>
+          <div className="weather-desc">{desc}</div>
+        </div>
+      </div>
+      <div className="weather-row">
+        <div className="weather-item"><strong>{Math.round(cw.windspeed)} km/h</strong>Veter</div>
+        {weather.daily?.precipitation_sum?.[0] !== undefined && <div className="weather-item"><strong>{weather.daily.precipitation_sum[0]} mm</strong>Padavine</div>}
+        <div className="weather-item"><strong>{cw.is_day ? 'Dan' : 'Noč'}</strong>Čas</div>
+      </div>
+    </div>
+  );
+}
+
+function Dashboard({ hotel, benchmark }) {
+  const chartRef = useRef(null);
+  const chartInst = useRef(null);
+  const today = new Date().toISOString().split('T')[0];
+  const occ = getOccupancyForDate(today);
+  const last30 = DEMO_RESERVATIONS.filter(r => r.date >= new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0] && r.date <= today);
+  const totalRev = last30.reduce((s, r) => s + r.revenue, 0);
+  const avgOcc = Math.round(last30.reduce((s, r) => s + r.occupiedRooms, 0) / last30.length);
+  const avgOccPct = Math.round(avgOcc / hotel.rooms * 100);
+
+  const superiorRoom = hotel.roomTypes.find(rt => rt.id === 'su') || hotel.roomTypes[1];
+  const todayResult = getPriceRecommendation(superiorRoom, today, null, occ.pct, benchmark);
+
+  useEffect(() => {
+    if (!chartRef.current) return;
+    if (chartInst.current) chartInst.current.destroy();
+
+    const todayStr2 = new Date().toISOString().split('T')[0];
+    const past30 = new Date(Date.now() - 29 * 86400000).toISOString().split('T')[0];
+    const slice = DEMO_RESERVATIONS.filter(r => r.date >= past30 && r.date <= todayStr2);
+
+    chartInst.current = new Chart(chartRef.current, {
+      type: 'bar',
+      data: {
+        labels: slice.map(r => r.date.slice(5)),
+        datasets: [{
+          label: 'Prihodki (€)',
+          data: slice.map(r => r.revenue),
+          backgroundColor: slice.map(r => r.date < todayStr2 ? '#162040' : '#b49448'),
+          borderRadius: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => `€ ${fmt(ctx.raw)}` } }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#8892a8', maxRotation: 0, maxTicksLimit: 10 } },
+          y: { grid: { color: '#eef0f5' }, ticks: { font: { size: 10 }, color: '#8892a8', callback: v => `€${v/1000}k` } }
+        }
+      }
+    });
+  }, []);
+
+  const upcoming = DEMO_EVENTS.filter(e => e.end_date >= today).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 3);
+
+  return (
+    <div>
+      <div className="grid-4">
+        <div className="kpi-tile highlight">
+          <div className="kpi-label">Priporočena cena danes</div>
+          <div className="kpi-value">{formatEUR(todayResult.price)}</div>
+          <div className="kpi-sub">Superior (dvoposteljna)</div>
+        </div>
+        <div className="kpi-tile">
+          <div className="kpi-label">Zasedenost danes</div>
+          <div className="kpi-value">{occ.pct}%</div>
+          <div className="kpi-sub">{occ.rooms} / {hotel.rooms} sob</div>
+        </div>
+        <div className="kpi-tile">
+          <div className="kpi-label">Prihodki (zadnjih 30 dni)</div>
+          <div className="kpi-value">{formatEUR(totalRev)}</div>
+          <div className="kpi-change up">↑ +12% vs lani</div>
+        </div>
+        <div className="kpi-tile">
+          <div className="kpi-label">Povp. zasedenost (30 dni)</div>
+          <div className="kpi-value">{avgOccPct}%</div>
+          <div className="kpi-sub">{avgOcc} sob povprečno</div>
+        </div>
+      </div>
+
+      <div className="grid-2">
+        <div className="card">
+          <div className="card-title">📊 Prihodki — zadnjih 30 dni</div>
+          <div className="chart-wrap"><canvas ref={chartRef}></canvas></div>
+          <div style={{ marginTop: 12, fontSize: 11, color: '#8892a8', display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+            <span><span style={{ display: 'inline-block', width: 10, height: 10, background: '#162040', borderRadius: 2, marginRight: 4 }}></span>Realizirano</span>
+            <span><span style={{ display: 'inline-block', width: 10, height: 10, background: '#b49448', borderRadius: 2, marginRight: 4 }}></span>Prihodnje</span>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, minWidth: 0 }}>
+          <WeatherWidget lat={hotel.lat} lon={hotel.lon} />
+          <div className="card" style={{ flex: 1, minWidth: 0 }}>
+            <div className="card-title">🗓️ Prihajajoči dogodki</div>
+            {upcoming.map(ev => {
+              const impactPct = '+' + Math.round((ev.impact_multiplier - 1) * 100) + '%';
+              return (
+                <div key={ev.id} className="event-item">
+                  <div className="event-date">
+                    <div className="day">{new Date(ev.date).getDate()}</div>
+                    <div className="month">{['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Avg','Sep','Okt','Nov','Dec'][new Date(ev.date).getMonth()]}</div>
+                  </div>
+                  <div className="event-body">
+                    <div className="event-name">{ev.name}</div>
+                    <div className="event-loc">{ev.city} · {ev.event_type}</div>
+                  </div>
+                  <span className="tag tag-med">{impactPct}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PricingEngine({ hotel, benchmark }) {
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [weather, setWeather] = useState(null);
+  const [reasoning, setReasoning] = useState('');
+  const [loadingAI, setLoadingAI] = useState(false);
+  const [generated, setGenerated] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${hotel.lat}&longitude=${hotel.lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=Europe%2FBerlin&forecast_days=14`)
+      .then(r => r.json())
+      .then(d => {
+        const idx = d.daily.time.indexOf(selectedDate);
+        if (idx >= 0) setWeather({ weathercode: d.daily.weathercode[idx], tmax: d.daily.temperature_2m_max[idx], tmin: d.daily.temperature_2m_min[idx], rain: d.daily.precipitation_sum[idx] });
+        else setWeather(null);
+      })
+      .catch(() => {});
+  }, [selectedDate]);
+
+  const occ = getOccupancyForDate(selectedDate);
+  const recs = hotel.roomTypes.map(rt => ({
+    ...rt,
+    ...getPriceRecommendation(rt, selectedDate, weather, occ.pct, benchmark),
+  }));
+
+  const superiorRec = recs.find(r => r.id === 'su') || recs[1];
+
+  const date = new Date(selectedDate);
+  const month = date.getMonth() + 1;
+  const dayOfWeek = ['Ned','Pon','Tor','Sre','Čet','Pet','Sob'][date.getDay()];
+  const isWeekend = [5, 6].includes(date.getDay());
+  const isPeak = [7, 8].includes(month);
+  const mmdd = `${String(month).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  const isHoliday = SLO_HOLIDAYS.includes(mmdd);
+
+  const filteredEvents = DEMO_EVENTS.filter(ev => {
+    const q = searchTerm.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      ev.name.toLowerCase().includes(q) ||
+      ev.location.toLowerCase().includes(q) ||
+      ev.city.toLowerCase().includes(q) ||
+      ev.event_type.toLowerCase().includes(q)
+    );
+  }).filter(ev => ev.end_date >= selectedDate);
+
+  async function generateReasoning() {
+    setLoadingAI(true);
+    setReasoning('');
+    setGenerated(false);
+
+    const prompt = `Si AI revenue manager za hotel ${hotel.name} v ${hotel.location}.
+
+Analiziraj datum: ${selectedDate} (${dayOfWeek})
+Podatki za pricing:
+- Mesec: ${month} ${isPeak ? '(PEAK sezona)' : isWeekend ? '(vikend)' : ''}
+- Državni praznik: ${isHoliday ? 'DA' : 'NE'}
+- Zasedenost tega dne: ${occ.pct}% (${occ.rooms}/${hotel.rooms} sob)
+- Vreme: ${weather ? `${weather.tmax}°C max, ${weather.tmin}°C min, padavine ${weather.rain}mm` : 'Ni podatkov'}
+- Skupni cenovni premik: ${superiorRec.totalAdj > 0 ? '+' : ''}${superiorRec.totalAdj}%
+- Aktivni faktorji: ${superiorRec.factors.map(f => `${f.name} (${f.val > 0 ? '+' : ''}${Math.round(f.val * 100)}%)`).join(', ')}
+- Priporočene cene: ${recs.map(r => `${r.name} → €${r.price}`).join(', ')}
+
+Napiši strokovno analizo zakaj priporočamo te cene — v slovenščini, 4-5 stavkov. Razloži ZAKAJ, ne povzemaj cen.`;
+
+    try {
+      const res = await fetch('/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+      const data = await res.json();
+      setReasoning(data.text || 'Napaka pri generiranju analize.');
+      setGenerated(true);
+    } catch (e) {
+      setReasoning('Napaka pri klicu AI — preverite API ključ.');
+    }
+    setLoadingAI(false);
+  }
+
+  return (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, flexWrap: 'wrap' }}>
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8892a8', marginBottom: 6 }}>Datum analize</div>
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={e => setSelectedDate(e.target.value)}
+            style={{ padding: '10px 14px', border: '1px solid #dde1eb', borderRadius: 8, fontFamily: 'Nunito', fontSize: 14, color: '#162040', maxWidth: '100%' }}
+          />
+        </div>
+        <div style={{ marginTop: 20, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <span className="chip">{dayOfWeek}</span>
+          {isPeak && <span className="chip" style={{ background: '#fdecea', color: '#c0392b' }}>Peak sezona</span>}
+          {isWeekend && !isPeak && <span className="chip">Vikend</span>}
+          {isHoliday && <span className="chip" style={{ background: '#fdecea', color: '#c0392b' }}>Državni praznik</span>}
+        </div>
+        <div style={{ marginLeft: 'auto', marginTop: 20 }}>
+          <button className="btn-gold" onClick={generateReasoning} disabled={loadingAI}>
+            {loadingAI ? '⏳ Analiziram…' : '🤖 AI analiza'}
+          </button>
+        </div>
+      </div>
+
+      <div className="grid-2" style={{ marginBottom: 24 }}>
+        <div className="card">
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8892a8', marginBottom: 8 }}>Zasedenost tega dne</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
+            <div style={{ fontFamily: 'Cormorant Garamond', fontSize: 36, fontWeight: 700, color: '#162040' }}>{occ.pct}%</div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ background: '#eef0f5', borderRadius: 6, height: 8, overflow: 'hidden' }}>
+                <div style={{ height: 8, width: `${occ.pct}%`, background: occ.pct > 80 ? '#c0392b' : occ.pct > 60 ? '#d97706' : '#162040', borderRadius: 6, transition: 'width 0.5s' }}></div>
+              </div>
+              <div style={{ fontSize: 12, color: '#8892a8', marginTop: 4 }}>{occ.rooms} / {hotel.rooms} sob</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card">
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8892a8', marginBottom: 8 }}>Vreme za ta dan</div>
+          {weather ? (
+            <div>
+              <span style={{ fontSize: 28 }}>{weather.weathercode === 0 ? '☀️' : weather.weathercode <= 3 ? '⛅' : weather.weathercode >= 61 ? '🌧️' : '🌤️'}</span>
+              <span style={{ fontFamily: 'Cormorant Garamond', fontSize: 28, fontWeight: 700, color: '#162040', marginLeft: 8 }}>{weather.tmax}°C</span>
+              <span style={{ fontSize: 13, color: '#8892a8', marginLeft: 6 }}>/ {weather.tmin}°C</span>
+              <div style={{ fontSize: 12, color: '#8892a8', marginTop: 4 }}>Padavine: {weather.rain} mm</div>
+            </div>
+          ) : <div style={{ fontSize: 13, color: '#8892a8' }}>Ni podatkov za ta datum ({'>'} 14 dni naprej)</div>}
+        </div>
+      </div>
+
+      <div className="card" style={{ marginBottom: 24 }}>
+        <div className="card-title">💡 Priporočene cene po tipu sobe</div>
+        <div style={{ fontSize: 12, color: '#8892a8', marginBottom: 16, marginTop: -12, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+          <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#b49448' }}></span>
+          Tržni benchmark (direktna konkurenca): <strong style={{ color: '#162040' }}>{formatEUR(benchmark)}</strong>
+          <span>·</span>
+          Vila Bled Superior pozicionirana ~10% nad tem
+        </div>
+        <div className="scroll-wrap">
+          <table className="pricing-table">
+            <thead>
+              <tr>
+                <th>Tip sobe</th>
+                <th>Osnovna cena</th>
+                <th>Priporočena cena</th>
+                <th>Premik</th>
+                <th>Min</th>
+                <th>Max</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recs.map(rt => {
+                const delta = rt.price - rt.basePrice;
+                const deltaPct = Math.round(delta / rt.basePrice * 100);
+                return (
+                  <tr key={rt.id}>
+                    <td><strong>{rt.name}</strong><br /><span style={{ fontSize: 11, color: '#8892a8' }}>{rt.count} sob</span></td>
+                    <td><span className="price-base">{formatEUR(rt.basePrice)}</span></td>
+                    <td><span className="price-rec">{formatEUR(rt.price)}</span></td>
+                    <td>
+                      <span className={`price-delta ${delta > 0 ? 'up' : delta < 0 ? 'down' : 'neutral'}`}>{delta > 0 ? '+' : ''}{deltaPct}%</span>
+                      {rt.capped && <span style={{ fontSize: 10, color: '#d97706', marginLeft: 6 }}>⚠ omejeno</span>}
+                    </td>
+                    <td style={{ fontSize: 12, color: '#8892a8' }}>{formatEUR(rt.minPrice)}</td>
+                    <td style={{ fontSize: 12, color: '#8892a8' }}>{formatEUR(rt.maxPrice)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {superiorRec.factors.length > 0 && (
+          <div style={{ marginTop: 20 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8892a8', marginBottom: 10 }}>
+              Razčlemba faktorjev — Superior soba
+            </div>
+            {superiorRec.factors.map((f, i) => (
+              <div key={i} className="factor-row">
+                <span className="factor-name">{f.name}</span>
+                <span className={`factor-val ${f.val > 0 ? 'pos' : f.val < 0 ? 'neg' : 'zero'}`}>{f.val > 0 ? '+' : ''}{Math.round(f.val * 100)}%</span>
+              </div>
+            ))}
+            <div className="factor-row" style={{ borderTop: '2px solid #dde1eb', marginTop: 4, paddingTop: 8, fontWeight: 700 }}>
+              <span>Skupni premik</span>
+              <span className={`factor-val ${superiorRec.totalAdj > 0 ? 'pos' : superiorRec.totalAdj < 0 ? 'neg' : 'zero'}`}>
+                {superiorRec.totalAdj > 0 ? '+' : ''}{superiorRec.totalAdj}%
+                {superiorRec.capped && ' ⚠ omejeno na ±15%'}
+              </span>
+            </div>
+          </div>
+        )}
+
+        <div style={{ marginTop: 24 }}>
+          <div className="card-title">📍 Lokalni dogodki</div>
+
+          <div className="event-search">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              placeholder="Išči lokalne dogodke po imenu, lokaciji ali tipu..."
+            />
+            {searchTerm && (
+              <button className="btn-sm" onClick={() => setSearchTerm('')}>Počisti</button>
+            )}
+          </div>
+
+          <div className="local-events">
+            {filteredEvents.length > 0 ? filteredEvents.map(ev => {
+              const impactPct = '+' + Math.round((ev.impact_multiplier - 1) * 100) + '%';
+              return (
+                <div key={ev.id} className="local-event-card">
+                  <div className="local-event-main">
+                    <div className="local-event-name">{ev.name}</div>
+                    <div className="local-event-meta">
+                      {ev.city} · {ev.location} · {ev.event_type} · {ev.date} → {ev.end_date}
+                    </div>
+                  </div>
+                  <span className="tag tag-med">{impactPct}</span>
+                </div>
+              );
+            }) : (
+              <div className="empty-state">Ni dogodkov za izbrani kriterij.</div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {(reasoning || loadingAI) && (
+        <div className="ai-reasoning">
+          <div className="ai-label"><span>⚡</span> MHC AI · Analiza priporočil</div>
+          {loadingAI ? <span className="ai-loading">Generiram analizo…</span> : reasoning}
+        </div>
+      )}
+
+      {!generated && !loadingAI && (
+        <div style={{ background: '#f8f9fb', borderRadius: 10, padding: 20, textAlign: 'center', color: '#8892a8', fontSize: 13 }}>
+          Kliknite <strong>"AI analiza"</strong> za generiranje utemeljitve priporočil v slovenščini.
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CompetitorRadar({ hotel, competitors, setCompetitors }) {
+  const [showModal, setShowModal] = useState(false);
+  const [editing, setEditing] = useState(null);
+  const [form, setForm] = useState({ name: '', type: 'Direktna konkurenca', stars: 4, avgPrice: '', threat: 'med', notes: '' });
+
+  const superiorRoom = hotel.roomTypes.find(rt => rt.id === 'su') || hotel.roomTypes[1];
+  const hotelADR = superiorRoom.basePrice;
+  const avgCompPrice = Math.round(competitors.reduce((s, c) => s + c.avgPrice, 0) / competitors.length);
+
+  function openAdd() {
+    setEditing(null);
+    setForm({ name: '', type: 'Direktna konkurenca', stars: 4, avgPrice: '', threat: 'med', notes: '' });
+    setShowModal(true);
+  }
+
+  function save() {
+    if (!form.name.trim() || !form.avgPrice) return;
+    const entry = { ...form, avgPrice: Number(form.avgPrice), id: editing || Date.now() };
+    if (editing) setCompetitors(cs => cs.map(c => c.id === editing ? entry : c));
+    else setCompetitors(cs => [...cs, entry]);
+    setShowModal(false);
+  }
+
+  function remove(id) {
+    setCompetitors(cs => cs.filter(c => c.id !== id));
+  }
+
+  const THREAT_LABEL = { high: 'Visoka', med: 'Srednja', low: 'Nizka' };
+  const THREAT_CLASS = { high: 'tag-high', med: 'tag-med', low: 'tag-low' };
+
+  return (
+    <div>
+      <div className="grid-3" style={{ marginBottom: 24 }}>
+        <div className="kpi-tile">
+          <div className="kpi-label">Benchmark</div>
+          <div className="kpi-value">{formatEUR(avgCompPrice)}</div>
+          <div className="kpi-sub">Povprečje konkurence</div>
+        </div>
+        <div className="kpi-tile">
+          <div className="kpi-label">ADR Vila Bled</div>
+          <div className="kpi-value">{formatEUR(hotelADR)}</div>
+          <div className="kpi-sub">Referenčna Superior cena</div>
+        </div>
+        <div className="kpi-tile">
+          <div className="kpi-label">Št. konkurentov</div>
+          <div className="kpi-value">{competitors.length}</div>
+          <div className="kpi-sub">V bazi radarja</div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="section-header">
+          <div className="section-title">Konkurenti</div>
+          <button className="btn-gold" onClick={openAdd}>+ Dodaj konkurenta</button>
+        </div>
+
+        <div style={{ display: 'grid', gap: 12 }}>
+          {competitors.map(c => (
+            <div key={c.id} className="competitor-card">
+              <div style={{ minWidth: 0 }}>
+                <div className="comp-name">{c.name}</div>
+                <div className="comp-type">{c.type} · {c.stars}★</div>
+                <div style={{ marginTop: 6 }}>
+                  <span className={`tag ${THREAT_CLASS[c.threat] || 'tag-med'}`}>{THREAT_LABEL[c.threat] || c.threat}</span>
+                </div>
+              </div>
+              <div>
+                <div className="comp-price">{formatEUR(c.avgPrice)}</div>
+                <div className={`comp-vs ${c.avgPrice > hotelADR ? 'above' : 'below'}`}>
+                  {c.avgPrice > hotelADR ? 'nad nami' : 'pod nami'}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {showModal && (
+        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-title">{editing ? 'Uredi konkurenta' : 'Dodaj konkurenta'}</div>
+            <div className="form-group"><label>Ime</label><input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
+            <div className="form-group">
+              <label>Tip</label>
+              <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
+                <option>Direktna konkurenca</option>
+                <option>Posredna konkurenca</option>
+              </select>
+            </div>
+            <div className="form-group"><label>Število zvezdic</label><input type="number" min="1" max="5" value={form.stars} onChange={e => setForm({ ...form, stars: e.target.value })} /></div>
+            <div className="form-group"><label>Povprečna cena</label><input type="number" value={form.avgPrice} onChange={e => setForm({ ...form, avgPrice: e.target.value })} /></div>
+            <div className="form-group">
+              <label>Grožnja</label>
+              <select value={form.threat} onChange={e => setForm({ ...form, threat: e.target.value })}>
+                <option value="high">Visoka</option>
+                <option value="med">Srednja</option>
+                <option value="low">Nizka</option>
+              </select>
+            </div>
+            <div className="form-group"><label>Opombe</label><textarea rows="3" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })}></textarea></div>
+            <div className="modal-footer">
+              <button className="btn-sm" onClick={() => setShowModal(false)}>Prekliči</button>
+              {editing && <button className="btn-danger-sm" onClick={() => remove(editing)}>Izbriši</button>}
+              <button className="btn-gold" onClick={save}>Shrani</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function App() {
+  const [user, setUser] = useState(null);
+  const [tab, setTab] = useState('dashboard');
+  const [hotel] = useState(DEMO_HOTEL);
+  const [competitors, setCompetitors] = useState(DEMO_COMPETITORS);
+  const benchmark = computeBenchmark(competitors);
+
+  if (!user) return <LoginScreen onLogin={setUser} />;
+
+  return (
+    <div className="app-shell">
+      <aside className="sidebar">
+        <div className="sidebar-logo">
+          <div className="brand">MHC REVENUE</div>
+          <div className="sub">Revenue Management Platform</div>
+        </div>
+        <div className="sidebar-hotel">
+          <strong>{hotel.name}</strong>
+          {hotel.location}
+          <div className="badge">DEMO / Vila Bled</div>
+        </div>
+
+        <div className="sidebar-nav">
+          <div className="nav-section">Pogled</div>
+          <div className={`nav-item ${tab === 'dashboard' ? 'active' : ''}`} onClick={() => setTab('dashboard')}>
+            <span className="nav-icon">📈</span>Dashboard
+          </div>
+          <div className={`nav-item ${tab === 'pricing' ? 'active' : ''}`} onClick={() => setTab('pricing')}>
+            <span className="nav-icon">💶</span>Pricing Engine
+          </div>
+          <div className={`nav-item ${tab === 'competitors' ? 'active' : ''}`} onClick={() => setTab('competitors')}>
+            <span className="nav-icon">🎯</span>Competitor Radar
+          </div>
+        </div>
+
+        <div className="sidebar-footer">Admin · Demo račun</div>
+      </aside>
+
+      <main className="main">
+        <div className="topbar">
+          <div style={{ minWidth: 0 }}>
+            <div className="topbar-title">
+              {tab === 'dashboard' ? 'Dashboard' : tab === 'pricing' ? 'Pricing Engine' : 'Competitor Radar'}
+            </div>
+            <div className="topbar-meta">MHC Revenue · Upravljanje cen za hotel {hotel.name}</div>
+          </div>
+          <div className="topbar-actions">
+            <span className="badge-pill badge-demo">DEMO</span>
+            <button className="btn-outline" onClick={() => setUser(null)}>Odjava</button>
+          </div>
+        </div>
+
+        <div className="page-content">
+          <div className="mobile-tabs">
+            <button className={tab === 'dashboard' ? 'active' : ''} onClick={() => setTab('dashboard')}>Dashboard</button>
+            <button className={tab === 'pricing' ? 'active' : ''} onClick={() => setTab('pricing')}>Pricing Engine</button>
+            <button className={tab === 'competitors' ? 'active' : ''} onClick={() => setTab('competitors')}>Competitor Radar</button>
+          </div>
+
+          {tab === 'dashboard' && <Dashboard hotel={hotel} benchmark={benchmark} />}
+          {tab === 'pricing' && <PricingEngine hotel={hotel} benchmark={benchmark} />}
+          {tab === 'competitors' && <CompetitorRadar hotel={hotel} competitors={competitors} setCompetitors={setCompetitors} />}
+        </div>
+      </main>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
