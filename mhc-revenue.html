@@ -124,14 +124,6 @@
     border-color: var(--gold);
   }
 
-  .btn-primary,
-  .btn-gold,
-  .btn-outline,
-  .btn-sm,
-  .btn-danger-sm {
-    cursor: pointer;
-  }
-
   .btn-primary {
     width: 100%;
     padding: 13px;
@@ -144,6 +136,7 @@
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
+    cursor: pointer;
     transition: background 0.2s;
   }
   .btn-primary:hover { background: var(--navy-light); }
@@ -157,6 +150,7 @@
     font-family: 'Nunito', sans-serif;
     font-size: 13px;
     font-weight: 700;
+    cursor: pointer;
     transition: background 0.2s;
   }
   .btn-gold:hover { background: var(--gold-light); }
@@ -170,6 +164,7 @@
     font-family: 'Nunito', sans-serif;
     font-size: 12px;
     font-weight: 700;
+    cursor: pointer;
     transition: all 0.2s;
   }
   .btn-outline:hover { background: var(--navy); color: var(--white); }
@@ -183,6 +178,7 @@
     font-family: 'Nunito', sans-serif;
     font-size: 12px;
     font-weight: 600;
+    cursor: pointer;
     transition: all 0.2s;
   }
 
@@ -195,6 +191,7 @@
     font-family: 'Nunito', sans-serif;
     font-size: 12px;
     font-weight: 600;
+    cursor: pointer;
     transition: all 0.2s;
   }
 
@@ -472,7 +469,6 @@
     vertical-align: middle;
     overflow-wrap: anywhere;
   }
-  .pricing-table tr:hover td { background: var(--gray-50); }
 
   .price-rec {
     font-family: 'Cormorant Garamond', serif;
@@ -766,13 +762,6 @@
   }
   .badge-demo { background: var(--gold-pale); color: var(--gold); }
 
-  .factor-row-wrap {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-  }
-
   @media (max-width: 900px) {
     .sidebar { display: none; }
     .main { margin-left: 0; }
@@ -1026,6 +1015,7 @@ function Dashboard({ hotel, benchmark }) {
   const totalRev = last30.reduce((s, r) => s + r.revenue, 0);
   const avgOcc = Math.round(last30.reduce((s, r) => s + r.occupiedRooms, 0) / last30.length);
   const avgOccPct = Math.round(avgOcc / hotel.rooms * 100);
+
   const superiorRoom = hotel.roomTypes.find(rt => rt.id === 'su') || hotel.roomTypes[1];
   const todayResult = getPriceRecommendation(superiorRoom, today, null, occ.pct, benchmark);
 
@@ -1060,7 +1050,7 @@ function Dashboard({ hotel, benchmark }) {
     });
   }, []);
 
-  const upcoming = [];
+  const upcoming = DEMO_EVENTS.filter(e => e.end_date >= today).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 3);
 
   return (
     <div>
@@ -1096,7 +1086,19 @@ function Dashboard({ hotel, benchmark }) {
           <WeatherWidget lat={hotel.lat} lon={hotel.lon} />
           <div className="card" style={{ flex: 1, minWidth: 0 }}>
             <div className="card-title">🗓️ Prihajajoči dogodki</div>
-            <div className="empty-state">Dogodki so prikazani v Pricing Engine z dejanskim API iskalnikom.</div>
+            {upcoming.map(ev => (
+              <div key={ev.id} className="event-item">
+                <div className="event-date">
+                  <div className="day">{new Date(ev.date).getDate()}</div>
+                  <div className="month">{['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Avg','Sep','Okt','Nov','Dec'][new Date(ev.date).getMonth()]}</div>
+                </div>
+                <div className="event-body">
+                  <div className="event-name">{ev.name}</div>
+                  <div className="event-loc">{ev.city} · {ev.event_type}</div>
+                </div>
+                <span className="tag tag-med">+{Math.round((ev.impact_multiplier - 1) * 100)}%</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -1110,11 +1112,6 @@ function PricingEngine({ hotel, benchmark }) {
   const [reasoning, setReasoning] = useState('');
   const [loadingAI, setLoadingAI] = useState(false);
   const [generated, setGenerated] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [eventLocation, setEventLocation] = useState('Bled, Slovenia');
-  const [apiEvents, setApiEvents] = useState([]);
-  const [eventLoading, setEventLoading] = useState(false);
-  const [eventError, setEventError] = useState('');
 
   useEffect(() => {
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${hotel.lat}&longitude=${hotel.lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=Europe%2FBerlin&forecast_days=14`)
@@ -1127,34 +1124,12 @@ function PricingEngine({ hotel, benchmark }) {
       .catch(() => {});
   }, [selectedDate]);
 
-  useEffect(() => {
-    async function loadEvents() {
-      setEventLoading(true);
-      setEventError('');
-      try {
-        const geo = await geocodeLocation(eventLocation);
-        if (!geo) {
-          setApiEvents([]);
-          setEventError('Lokacije ni bilo mogoče najti.');
-          setEventLoading(false);
-          return;
-        }
-        const events = await fetchNearbyEvents(geo.lat, geo.lon);
-        setApiEvents(events);
-      } catch (e) {
-        setApiEvents([]);
-        setEventError('Napaka pri nalaganju dogodkov.');
-      }
-      setEventLoading(false);
-    }
-    loadEvents();
-  }, [eventLocation]);
-
   const occ = getOccupancyForDate(selectedDate);
   const recs = hotel.roomTypes.map(rt => ({
     ...rt,
     ...getPriceRecommendation(rt, selectedDate, weather, occ.pct, benchmark),
   }));
+
   const superiorRec = recs.find(r => r.id === 'su') || recs[1];
 
   const date = new Date(selectedDate);
@@ -1165,23 +1140,12 @@ function PricingEngine({ hotel, benchmark }) {
   const mmdd = `${String(month).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   const isHoliday = SLO_HOLIDAYS.includes(mmdd);
 
-  const filteredEvents = apiEvents.filter(ev => {
-    const q = searchTerm.trim().toLowerCase();
-    if (!q) return true;
-    return (
-      ev.name.toLowerCase().includes(q) ||
-      ev.location.toLowerCase().includes(q) ||
-      ev.city.toLowerCase().includes(q) ||
-      ev.event_type.toLowerCase().includes(q)
-    );
-  });
-
   async function generateReasoning() {
     setLoadingAI(true);
     setReasoning('');
     setGenerated(false);
 
-    const prompt = `Si AI revenue manager za hotel ${hotel.name} v ${hotel.location}. Napiši 4-5 stavkov strokovne analize v slovenščini.`;
+    const prompt = `Si AI revenue manager za hotel ${hotel.name} v ${hotel.location}. Analiziraj datum ${selectedDate}.`;
 
     try {
       const res = await fetch('/api/ai', {
@@ -1203,7 +1167,12 @@ function PricingEngine({ hotel, benchmark }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, flexWrap: 'wrap' }}>
         <div>
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8892a8', marginBottom: 6 }}>Datum analize</div>
-          <input type="date" value={selectedDate} onChange={e => setSelectedDate(e.target.value)} style={{ padding: '10px 14px', border: '1px solid #dde1eb', borderRadius: 8, fontFamily: 'Nunito', fontSize: 14, color: '#162040', maxWidth: '100%' }} />
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={e => setSelectedDate(e.target.value)}
+            style={{ padding: '10px 14px', border: '1px solid #dde1eb', borderRadius: 8, fontFamily: 'Nunito', fontSize: 14, color: '#162040', maxWidth: '100%' }}
+          />
         </div>
         <div style={{ marginTop: 20, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <span className="chip">{dayOfWeek}</span>
@@ -1250,8 +1219,6 @@ function PricingEngine({ hotel, benchmark }) {
         <div style={{ fontSize: 12, color: '#8892a8', marginBottom: 16, marginTop: -12, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
           <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#b49448' }}></span>
           Tržni benchmark (direktna konkurenca): <strong style={{ color: '#162040' }}>{formatEUR(benchmark)}</strong>
-          <span>·</span>
-          Vila Bled Superior pozicionirana ~10% nad tem
         </div>
         <div className="scroll-wrap">
           <table className="pricing-table">
@@ -1300,50 +1267,6 @@ function PricingEngine({ hotel, benchmark }) {
             ))}
           </div>
         )}
-
-        <div style={{ marginTop: 24 }}>
-          <div className="card-title">📍 Lokalni dogodki</div>
-
-          <div className="event-search">
-            <input
-              type="text"
-              value={eventLocation}
-              onChange={e => setEventLocation(e.target.value)}
-              placeholder="Vnesi lokacijo, npr. Bled, Slovenia"
-            />
-          </div>
-
-          <div className="event-search">
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-              placeholder="Išči dogodke po imenu, lokaciji ali tipu..."
-            />
-            {searchTerm && <button className="btn-sm" onClick={() => setSearchTerm('')}>Počisti</button>}
-          </div>
-
-          {eventLoading && <div className="empty-state">Nalagam dogodke …</div>}
-          {eventError && <div className="empty-state">{eventError}</div>}
-
-          <div className="local-events">
-            {!eventLoading && !eventError && filteredEvents.length > 0 ? filteredEvents.map(ev => {
-              return (
-                <div key={ev.id} className="local-event-card">
-                  <div className="local-event-main">
-                    <div className="local-event-name">{ev.name}</div>
-                    <div className="local-event-meta">
-                      {ev.city} · {ev.location} · {ev.event_type} · {ev.date}
-                    </div>
-                  </div>
-                  <span className="tag tag-med">API</span>
-                </div>
-              );
-            }) : !eventLoading && !eventError ? (
-              <div className="empty-state">Ni dogodkov za izbrani kriterij.</div>
-            ) : null}
-          </div>
-        </div>
       </div>
 
       {(reasoning || loadingAI) && (
@@ -1358,6 +1281,92 @@ function PricingEngine({ hotel, benchmark }) {
           Kliknite <strong>"AI analiza"</strong> za generiranje utemeljitve priporočil v slovenščini.
         </div>
       )}
+    </div>
+  );
+}
+
+function LocalEvents({ hotel }) {
+  const [eventLocation, setEventLocation] = useState('Bled, Slovenia');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [apiEvents, setApiEvents] = useState([]);
+  const [eventLoading, setEventLoading] = useState(false);
+  const [eventError, setEventError] = useState('');
+
+  useEffect(() => {
+    async function loadEvents() {
+      setEventLoading(true);
+      setEventError('');
+      try {
+        const geo = await geocodeLocation(eventLocation);
+        if (!geo) {
+          setApiEvents([]);
+          setEventError('Lokacije ni bilo mogoče najti.');
+          setEventLoading(false);
+          return;
+        }
+        const events = await fetchNearbyEvents(geo.lat, geo.lon);
+        setApiEvents(events);
+      } catch (e) {
+        setApiEvents([]);
+        setEventError('Napaka pri nalaganju dogodkov.');
+      }
+      setEventLoading(false);
+    }
+    loadEvents();
+  }, [eventLocation]);
+
+  const filteredEvents = apiEvents.filter(ev => {
+    const q = searchTerm.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      ev.name.toLowerCase().includes(q) ||
+      ev.location.toLowerCase().includes(q) ||
+      ev.city.toLowerCase().includes(q) ||
+      ev.event_type.toLowerCase().includes(q)
+    );
+  });
+
+  return (
+    <div className="card">
+      <div className="card-title">📍 Lokalni dogodki</div>
+
+      <div className="event-search">
+        <input
+          type="text"
+          value={eventLocation}
+          onChange={e => setEventLocation(e.target.value)}
+          placeholder="Vnesi lokacijo, npr. Bled, Slovenia"
+        />
+      </div>
+
+      <div className="event-search">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+          placeholder="Išči dogodke po imenu, lokaciji ali tipu..."
+        />
+        {searchTerm && <button className="btn-sm" onClick={() => setSearchTerm('')}>Počisti</button>}
+      </div>
+
+      {eventLoading && <div className="empty-state">Nalagam dogodke …</div>}
+      {eventError && <div className="empty-state">{eventError}</div>}
+
+      <div className="local-events">
+        {!eventLoading && !eventError && filteredEvents.length > 0 ? filteredEvents.map(ev => (
+          <div key={ev.id} className="local-event-card">
+            <div className="local-event-main">
+              <div className="local-event-name">{ev.name}</div>
+              <div className="local-event-meta">
+                {ev.city} · {ev.location} · {ev.event_type} · {ev.date}
+              </div>
+            </div>
+            <span className="tag tag-med">API</span>
+          </div>
+        )) : !eventLoading && !eventError ? (
+          <div className="empty-state">Ni dogodkov za izbrani kriterij.</div>
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -1495,19 +1504,32 @@ function App() {
           {hotel.location}
           <div className="badge">DEMO / Vila Bled</div>
         </div>
+
         <div className="sidebar-nav">
           <div className="nav-section">Pogled</div>
-          <div className={`nav-item ${tab === 'dashboard' ? 'active' : ''}`} onClick={() => setTab('dashboard')}><span className="nav-icon">📈</span>Dashboard</div>
-          <div className={`nav-item ${tab === 'pricing' ? 'active' : ''}`} onClick={() => setTab('pricing')}><span className="nav-icon">💶</span>Pricing Engine</div>
-          <div className={`nav-item ${tab === 'competitors' ? 'active' : ''}`} onClick={() => setTab('competitors')}><span className="nav-icon">🎯</span>Competitor Radar</div>
+          <div className={`nav-item ${tab === 'dashboard' ? 'active' : ''}`} onClick={() => setTab('dashboard')}>
+            <span className="nav-icon">📈</span>Dashboard
+          </div>
+          <div className={`nav-item ${tab === 'pricing' ? 'active' : ''}`} onClick={() => setTab('pricing')}>
+            <span className="nav-icon">💶</span>Pricing Engine
+          </div>
+          <div className={`nav-item ${tab === 'events' ? 'active' : ''}`} onClick={() => setTab('events')}>
+            <span className="nav-icon">📍</span>Lokalni dogodki
+          </div>
+          <div className={`nav-item ${tab === 'competitors' ? 'active' : ''}`} onClick={() => setTab('competitors')}>
+            <span className="nav-icon">🎯</span>Competitor Radar
+          </div>
         </div>
+
         <div className="sidebar-footer">Admin · Demo račun</div>
       </aside>
 
       <main className="main">
         <div className="topbar">
           <div style={{ minWidth: 0 }}>
-            <div className="topbar-title">{tab === 'dashboard' ? 'Dashboard' : tab === 'pricing' ? 'Pricing Engine' : 'Competitor Radar'}</div>
+            <div className="topbar-title">
+              {tab === 'dashboard' ? 'Dashboard' : tab === 'pricing' ? 'Pricing Engine' : tab === 'events' ? 'Lokalni dogodki' : 'Competitor Radar'}
+            </div>
             <div className="topbar-meta">MHC Revenue · Upravljanje cen za hotel {hotel.name}</div>
           </div>
           <div className="topbar-actions">
@@ -1520,11 +1542,13 @@ function App() {
           <div className="mobile-tabs">
             <button className={tab === 'dashboard' ? 'active' : ''} onClick={() => setTab('dashboard')}>Dashboard</button>
             <button className={tab === 'pricing' ? 'active' : ''} onClick={() => setTab('pricing')}>Pricing Engine</button>
+            <button className={tab === 'events' ? 'active' : ''} onClick={() => setTab('events')}>Lokalni dogodki</button>
             <button className={tab === 'competitors' ? 'active' : ''} onClick={() => setTab('competitors')}>Competitor Radar</button>
           </div>
 
           {tab === 'dashboard' && <Dashboard hotel={hotel} benchmark={benchmark} />}
           {tab === 'pricing' && <PricingEngine hotel={hotel} benchmark={benchmark} />}
+          {tab === 'events' && <LocalEvents hotel={hotel} />}
           {tab === 'competitors' && <CompetitorRadar hotel={hotel} competitors={competitors} setCompetitors={setCompetitors} />}
         </div>
       </main>
