@@ -47,10 +47,7 @@
     min-width: 0;
   }
 
-  img, canvas, svg, video {
-    max-width: 100%;
-  }
-
+  img, canvas, svg, video { max-width: 100%; }
   h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; }
 
   .auth-screen {
@@ -74,7 +71,6 @@
   }
 
   .auth-logo { text-align: center; margin-bottom: 32px; }
-
   .auth-logo .brand {
     font-family: 'Cormorant Garamond', serif;
     font-size: 28px;
@@ -82,7 +78,6 @@
     color: var(--navy);
     letter-spacing: 2px;
   }
-
   .auth-logo .sub {
     font-size: 11px;
     letter-spacing: 3px;
@@ -90,7 +85,6 @@
     color: var(--gold);
     margin-top: 4px;
   }
-
   .auth-logo .divider {
     width: 40px;
     height: 2px;
@@ -99,7 +93,6 @@
   }
 
   .form-group { margin-bottom: 20px; }
-
   .form-group label {
     display: block;
     font-size: 11px;
@@ -109,10 +102,10 @@
     color: var(--gray-600);
     margin-bottom: 6px;
   }
-
   .form-group input,
   .form-group select,
-  .form-group textarea {
+  .form-group textarea,
+  .event-search input {
     width: 100%;
     padding: 11px 14px;
     border: 1px solid var(--gray-200);
@@ -123,12 +116,20 @@
     background: var(--white);
     transition: border-color 0.2s;
   }
-
   .form-group input:focus,
   .form-group select:focus,
-  .form-group textarea:focus {
+  .form-group textarea:focus,
+  .event-search input:focus {
     outline: none;
     border-color: var(--gold);
+  }
+
+  .btn-primary,
+  .btn-gold,
+  .btn-outline,
+  .btn-sm,
+  .btn-danger-sm {
+    cursor: pointer;
   }
 
   .btn-primary {
@@ -143,10 +144,8 @@
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    cursor: pointer;
     transition: background 0.2s;
   }
-
   .btn-primary:hover { background: var(--navy-light); }
 
   .btn-gold {
@@ -158,10 +157,8 @@
     font-family: 'Nunito', sans-serif;
     font-size: 13px;
     font-weight: 700;
-    cursor: pointer;
     transition: background 0.2s;
   }
-
   .btn-gold:hover { background: var(--gold-light); }
 
   .btn-outline {
@@ -173,10 +170,8 @@
     font-family: 'Nunito', sans-serif;
     font-size: 12px;
     font-weight: 700;
-    cursor: pointer;
     transition: all 0.2s;
   }
-
   .btn-outline:hover { background: var(--navy); color: var(--white); }
 
   .btn-sm {
@@ -188,11 +183,8 @@
     font-family: 'Nunito', sans-serif;
     font-size: 12px;
     font-weight: 600;
-    cursor: pointer;
     transition: all 0.2s;
   }
-
-  .btn-sm:hover { background: var(--gray-200); }
 
   .btn-danger-sm {
     padding: 6px 14px;
@@ -203,7 +195,6 @@
     font-family: 'Nunito', sans-serif;
     font-size: 12px;
     font-weight: 600;
-    cursor: pointer;
     transition: all 0.2s;
   }
 
@@ -240,14 +231,12 @@
     padding: 28px 24px 20px;
     border-bottom: 1px solid rgba(255,255,255,0.08);
   }
-
   .sidebar-logo .brand {
     font-family: 'Cormorant Garamond', serif;
     font-size: 22px;
     font-weight: 700;
     letter-spacing: 2px;
   }
-
   .sidebar-logo .sub {
     font-size: 9px;
     letter-spacing: 3px;
@@ -262,14 +251,12 @@
     font-size: 12px;
     color: rgba(255,255,255,0.5);
   }
-
   .sidebar-hotel strong {
     display: block;
     color: var(--white);
     font-size: 13px;
     margin-bottom: 2px;
   }
-
   .sidebar-hotel .badge {
     display: inline-block;
     background: var(--gold);
@@ -283,11 +270,7 @@
     margin-top: 4px;
   }
 
-  .sidebar-nav {
-    flex: 1;
-    padding: 16px 0;
-  }
-
+  .sidebar-nav { flex: 1; padding: 16px 0; }
   .nav-section {
     padding: 8px 24px 4px;
     font-size: 9px;
@@ -296,7 +279,6 @@
     text-transform: uppercase;
     color: rgba(255,255,255,0.3);
   }
-
   .nav-item {
     display: flex;
     align-items: center;
@@ -309,23 +291,13 @@
     transition: all 0.15s;
     border-left: 3px solid transparent;
   }
-
-  .nav-item:hover {
-    color: var(--white);
-    background: rgba(255,255,255,0.05);
-  }
-
+  .nav-item:hover { color: var(--white); background: rgba(255,255,255,0.05); }
   .nav-item.active {
     color: var(--white);
     background: rgba(180,148,72,0.12);
     border-left-color: var(--gold);
   }
-
-  .nav-icon {
-    font-size: 16px;
-    width: 20px;
-    text-align: center;
-  }
+  .nav-icon { font-size: 16px; width: 20px; text-align: center; }
 
   .sidebar-footer {
     padding: 16px 24px;
@@ -362,13 +334,11 @@
     font-weight: 600;
     color: var(--navy);
   }
-
   .topbar-meta {
     font-size: 12px;
     color: var(--gray-400);
     margin-top: 2px;
   }
-
   .topbar-actions {
     display: flex;
     align-items: center;
@@ -377,10 +347,7 @@
     min-width: 0;
   }
 
-  .page-content {
-    padding: 28px 32px;
-    min-width: 0;
-  }
+  .page-content { padding: 28px 32px; min-width: 0; }
 
   .mobile-tabs {
     display: none;
@@ -388,7 +355,6 @@
     padding: 0 0 16px;
     flex-wrap: wrap;
   }
-
   .mobile-tabs button {
     border: 1px solid var(--gray-200);
     background: var(--white);
@@ -398,7 +364,6 @@
     font-size: 13px;
     font-weight: 700;
   }
-
   .mobile-tabs button.active {
     background: var(--navy);
     color: var(--white);
@@ -412,7 +377,6 @@
     padding: 24px;
     min-width: 0;
   }
-
   .card-title {
     font-family: 'Cormorant Garamond', serif;
     font-size: 18px;
@@ -432,7 +396,6 @@
     margin-bottom: 24px;
     min-width: 0;
   }
-
   .grid-2 {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -440,7 +403,6 @@
     margin-bottom: 24px;
     min-width: 0;
   }
-
   .grid-3 {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -455,7 +417,6 @@
     padding: 20px;
     min-width: 0;
   }
-
   .kpi-label {
     font-size: 11px;
     font-weight: 700;
@@ -464,7 +425,6 @@
     color: var(--gray-400);
     margin-bottom: 8px;
   }
-
   .kpi-value {
     font-family: 'Cormorant Garamond', serif;
     font-size: 32px;
@@ -473,19 +433,27 @@
     line-height: 1;
     overflow-wrap: anywhere;
   }
-
   .kpi-sub {
     font-size: 12px;
     color: var(--gray-400);
     margin-top: 6px;
     overflow-wrap: anywhere;
   }
+  .kpi-change { font-size: 12px; font-weight: 700; margin-top: 4px; }
+  .kpi-change.up { color: var(--green); }
+
+  .kpi-tile.highlight {
+    background: var(--navy);
+    border-color: var(--navy);
+  }
+  .kpi-tile.highlight .kpi-label { color: rgba(255,255,255,0.5); }
+  .kpi-tile.highlight .kpi-value { color: var(--gold-light); }
+  .kpi-tile.highlight .kpi-sub { color: rgba(255,255,255,0.4); }
 
   .pricing-table {
     width: 100%;
     border-collapse: collapse;
   }
-
   .pricing-table th {
     text-align: left;
     padding: 10px 14px;
@@ -497,7 +465,6 @@
     border-bottom: 2px solid var(--gray-200);
     background: var(--gray-50);
   }
-
   .pricing-table td {
     padding: 14px;
     border-bottom: 1px solid var(--gray-100);
@@ -505,6 +472,7 @@
     vertical-align: middle;
     overflow-wrap: anywhere;
   }
+  .pricing-table tr:hover td { background: var(--gray-50); }
 
   .price-rec {
     font-family: 'Cormorant Garamond', serif;
@@ -512,18 +480,12 @@
     font-weight: 700;
     color: var(--navy);
   }
-
   .price-base {
     font-size: 12px;
     color: var(--gray-400);
     text-decoration: line-through;
   }
-
-  .price-delta {
-    font-size: 12px;
-    font-weight: 700;
-  }
-
+  .price-delta { font-size: 12px; font-weight: 700; }
   .price-delta.up { color: var(--green); }
   .price-delta.down { color: var(--red); }
   .price-delta.neutral { color: var(--gray-400); }
@@ -535,7 +497,6 @@
     font-size: 11px;
     font-weight: 700;
   }
-
   .tag-high { background: var(--red-light); color: var(--red); }
   .tag-med { background: var(--orange-light); color: var(--orange); }
   .tag-low { background: var(--green-light); color: var(--green); }
@@ -550,7 +511,6 @@
     border-left: 3px solid var(--gold);
     white-space: pre-wrap;
   }
-
   .ai-reasoning .ai-label {
     font-size: 10px;
     font-weight: 700;
@@ -570,32 +530,24 @@
     padding: 20px;
     min-width: 0;
   }
-
   .weather-temp {
     font-family: 'Cormorant Garamond', serif;
     font-size: 48px;
     font-weight: 700;
     line-height: 1;
   }
-
   .weather-desc {
     font-size: 13px;
     color: rgba(255,255,255,0.6);
     margin-top: 4px;
   }
-
   .weather-row {
     display: flex;
     gap: 16px;
     margin-top: 16px;
     flex-wrap: wrap;
   }
-
-  .weather-item {
-    font-size: 12px;
-    color: rgba(255,255,255,0.5);
-  }
-
+  .weather-item { font-size: 12px; color: rgba(255,255,255,0.5); }
   .weather-item strong {
     color: var(--white);
     display: block;
@@ -609,12 +561,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    transition: border-color 0.2s;
-    min-width: 0;
     gap: 16px;
+    min-width: 0;
   }
-
-  .competitor-card:hover { border-color: var(--gold); }
 
   .comp-name {
     font-weight: 700;
@@ -622,9 +571,7 @@
     color: var(--navy);
     overflow-wrap: anywhere;
   }
-
   .comp-type { font-size: 11px; color: var(--gray-400); }
-
   .comp-price {
     font-family: 'Cormorant Garamond', serif;
     font-size: 24px;
@@ -632,12 +579,7 @@
     color: var(--navy);
     text-align: right;
   }
-
-  .comp-vs {
-    font-size: 11px;
-    font-weight: 700;
-  }
-
+  .comp-vs { font-size: 11px; font-weight: 700; }
   .comp-vs.above { color: var(--green); }
   .comp-vs.below { color: var(--red); }
 
@@ -654,7 +596,6 @@
     min-width: 50px;
     text-align: center;
   }
-
   .event-date .day {
     font-family: 'Cormorant Garamond', serif;
     font-size: 28px;
@@ -662,7 +603,6 @@
     line-height: 1;
     color: var(--navy);
   }
-
   .event-date .month {
     font-size: 10px;
     text-transform: uppercase;
@@ -670,18 +610,13 @@
     color: var(--gray-400);
   }
 
-  .event-body {
-    flex: 1;
-    min-width: 0;
-  }
-
+  .event-body { flex: 1; min-width: 0; }
   .event-name {
     font-weight: 700;
     font-size: 14px;
     color: var(--navy);
     overflow-wrap: anywhere;
   }
-
   .event-loc {
     font-size: 12px;
     color: var(--gray-400);
@@ -699,7 +634,6 @@
     z-index: 200;
     padding: 16px;
   }
-
   .modal {
     background: var(--white);
     border-radius: 12px;
@@ -709,7 +643,6 @@
     overflow-y: auto;
     box-shadow: 0 32px 80px rgba(0,0,0,0.25);
   }
-
   .modal-title {
     font-family: 'Cormorant Garamond', serif;
     font-size: 22px;
@@ -717,7 +650,6 @@
     color: var(--navy);
     margin-bottom: 24px;
   }
-
   .modal-footer {
     display: flex;
     justify-content: flex-end;
@@ -760,20 +692,16 @@
     font-size: 13px;
     gap: 12px;
   }
-
   .factor-row:last-child { border-bottom: none; }
-
   .factor-name {
     color: var(--gray-600);
     min-width: 0;
     overflow-wrap: anywhere;
   }
-
   .factor-val {
     font-weight: 700;
     white-space: nowrap;
   }
-
   .factor-val.pos { color: var(--green); }
   .factor-val.neg { color: var(--red); }
   .factor-val.zero { color: var(--gray-400); }
@@ -783,7 +711,6 @@
     display: grid;
     gap: 12px;
   }
-
   .local-event-card {
     border: 1px solid var(--gray-200);
     border-radius: 10px;
@@ -795,19 +722,16 @@
     gap: 16px;
     min-width: 0;
   }
-
   .local-event-main {
     min-width: 0;
     flex: 1;
   }
-
   .local-event-name {
     font-weight: 700;
     color: var(--navy);
     font-size: 14px;
     overflow-wrap: anywhere;
   }
-
   .local-event-meta {
     font-size: 12px;
     color: var(--gray-400);
@@ -821,17 +745,32 @@
     margin-bottom: 14px;
     flex-wrap: wrap;
   }
-
   .event-search input {
     flex: 1;
     min-width: 220px;
-    padding: 11px 14px;
-    border: 1px solid var(--gray-200);
-    border-radius: 8px;
-    font-family: 'Nunito', sans-serif;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--gray-400);
     font-size: 14px;
-    color: var(--navy);
-    background: var(--white);
+  }
+
+  .badge-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .badge-demo { background: var(--gold-pale); color: var(--gold); }
+
+  .factor-row-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
   }
 
   @media (max-width: 900px) {
@@ -861,6 +800,8 @@
 
 <script type="text/babel">
 const { useState, useEffect, useRef } = React;
+
+const EVENT_API_KEY = 'YOUR_TICKETMASTER_API_KEY';
 
 const DEMO_HOTEL = {
   id: 'vila-bled',
@@ -902,14 +843,6 @@ function buildDemoReservations() {
   return data;
 }
 const DEMO_RESERVATIONS = buildDemoReservations();
-
-const DEMO_EVENTS = [
-  { id: 1, name: 'Okusiti Slovenijo', date: '2026-07-04', end_date: '2026-07-06', event_type: 'festival', location: 'Bled', impact_multiplier: 1.18, expected_demand: 'high', city: 'Bled' },
-  { id: 2, name: 'Bled Strategic Forum', date: '2026-09-02', end_date: '2026-09-04', event_type: 'conference', location: 'Bled', impact_multiplier: 1.35, expected_demand: 'very_high', city: 'Bled' },
-  { id: 3, name: 'Triglav Trail', date: '2026-07-18', end_date: '2026-07-19', event_type: 'sports', location: 'Bled', impact_multiplier: 1.22, expected_demand: 'high', city: 'Bled' },
-  { id: 4, name: 'Ljubljana Festival', date: '2026-07-11', end_date: '2026-07-13', event_type: 'festival', location: 'Ljubljana', impact_multiplier: 1.08, expected_demand: 'medium', city: 'Ljubljana' },
-  { id: 5, name: 'Poletni kongres HGS', date: '2026-06-25', end_date: '2026-06-26', event_type: 'conference', location: 'Bled', impact_multiplier: 1.15, expected_demand: 'medium', city: 'Bled' },
-];
 
 const SLO_HOLIDAYS = ['01-01','02-08','04-27','05-01','05-02','06-08','06-25','08-15','10-31','11-01','12-25','12-26'];
 
@@ -977,6 +910,32 @@ function getPriceRecommendation(roomType, dateStr, weather, occ, benchmark) {
     totalAdj: Math.round(totalAdj * 100),
     capped: Math.abs(totalAdj) >= 0.119
   };
+}
+
+async function geocodeLocation(query) {
+  const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(query)}&limit=1`;
+  const res = await fetch(url, { headers: { Accept: 'application/json' } });
+  const data = await res.json();
+  if (!data?.length) return null;
+  return { lat: Number(data[0].lat), lon: Number(data[0].lon) };
+}
+
+async function fetchNearbyEvents(lat, lon) {
+  const url = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=${EVENT_API_KEY}&latlong=${lat},${lon}&radius=50&unit=km&locale=sl-SI&size=10`;
+  const res = await fetch(url);
+  const data = await res.json();
+  const events = data?._embedded?.events || [];
+  return events.map(ev => ({
+    id: ev.id,
+    name: ev.name,
+    date: ev.dates?.start?.localDate || '',
+    end_date: ev.dates?.start?.localDate || '',
+    event_type: ev.classifications?.[0]?.segment?.name?.toLowerCase() || 'event',
+    location: ev._embedded?.venues?.[0]?.name || '',
+    city: ev._embedded?.venues?.[0]?.city?.name || '',
+    impact_multiplier: 1.05,
+    expected_demand: 'medium'
+  }));
 }
 
 function LoginScreen({ onLogin }) {
@@ -1067,7 +1026,6 @@ function Dashboard({ hotel, benchmark }) {
   const totalRev = last30.reduce((s, r) => s + r.revenue, 0);
   const avgOcc = Math.round(last30.reduce((s, r) => s + r.occupiedRooms, 0) / last30.length);
   const avgOccPct = Math.round(avgOcc / hotel.rooms * 100);
-
   const superiorRoom = hotel.roomTypes.find(rt => rt.id === 'su') || hotel.roomTypes[1];
   const todayResult = getPriceRecommendation(superiorRoom, today, null, occ.pct, benchmark);
 
@@ -1093,10 +1051,7 @@ function Dashboard({ hotel, benchmark }) {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: { callbacks: { label: ctx => `€ ${fmt(ctx.raw)}` } }
-        },
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `€ ${fmt(ctx.raw)}` } } },
         scales: {
           x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#8892a8', maxRotation: 0, maxTicksLimit: 10 } },
           y: { grid: { color: '#eef0f5' }, ticks: { font: { size: 10 }, color: '#8892a8', callback: v => `€${v/1000}k` } }
@@ -1105,7 +1060,7 @@ function Dashboard({ hotel, benchmark }) {
     });
   }, []);
 
-  const upcoming = DEMO_EVENTS.filter(e => e.end_date >= today).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 3);
+  const upcoming = [];
 
   return (
     <div>
@@ -1136,32 +1091,12 @@ function Dashboard({ hotel, benchmark }) {
         <div className="card">
           <div className="card-title">📊 Prihodki — zadnjih 30 dni</div>
           <div className="chart-wrap"><canvas ref={chartRef}></canvas></div>
-          <div style={{ marginTop: 12, fontSize: 11, color: '#8892a8', display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-            <span><span style={{ display: 'inline-block', width: 10, height: 10, background: '#162040', borderRadius: 2, marginRight: 4 }}></span>Realizirano</span>
-            <span><span style={{ display: 'inline-block', width: 10, height: 10, background: '#b49448', borderRadius: 2, marginRight: 4 }}></span>Prihodnje</span>
-          </div>
         </div>
-
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, minWidth: 0 }}>
           <WeatherWidget lat={hotel.lat} lon={hotel.lon} />
           <div className="card" style={{ flex: 1, minWidth: 0 }}>
             <div className="card-title">🗓️ Prihajajoči dogodki</div>
-            {upcoming.map(ev => {
-              const impactPct = '+' + Math.round((ev.impact_multiplier - 1) * 100) + '%';
-              return (
-                <div key={ev.id} className="event-item">
-                  <div className="event-date">
-                    <div className="day">{new Date(ev.date).getDate()}</div>
-                    <div className="month">{['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Avg','Sep','Okt','Nov','Dec'][new Date(ev.date).getMonth()]}</div>
-                  </div>
-                  <div className="event-body">
-                    <div className="event-name">{ev.name}</div>
-                    <div className="event-loc">{ev.city} · {ev.event_type}</div>
-                  </div>
-                  <span className="tag tag-med">{impactPct}</span>
-                </div>
-              );
-            })}
+            <div className="empty-state">Dogodki so prikazani v Pricing Engine z dejanskim API iskalnikom.</div>
           </div>
         </div>
       </div>
@@ -1176,6 +1111,10 @@ function PricingEngine({ hotel, benchmark }) {
   const [loadingAI, setLoadingAI] = useState(false);
   const [generated, setGenerated] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [eventLocation, setEventLocation] = useState('Bled, Slovenia');
+  const [apiEvents, setApiEvents] = useState([]);
+  const [eventLoading, setEventLoading] = useState(false);
+  const [eventError, setEventError] = useState('');
 
   useEffect(() => {
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${hotel.lat}&longitude=${hotel.lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=Europe%2FBerlin&forecast_days=14`)
@@ -1188,12 +1127,34 @@ function PricingEngine({ hotel, benchmark }) {
       .catch(() => {});
   }, [selectedDate]);
 
+  useEffect(() => {
+    async function loadEvents() {
+      setEventLoading(true);
+      setEventError('');
+      try {
+        const geo = await geocodeLocation(eventLocation);
+        if (!geo) {
+          setApiEvents([]);
+          setEventError('Lokacije ni bilo mogoče najti.');
+          setEventLoading(false);
+          return;
+        }
+        const events = await fetchNearbyEvents(geo.lat, geo.lon);
+        setApiEvents(events);
+      } catch (e) {
+        setApiEvents([]);
+        setEventError('Napaka pri nalaganju dogodkov.');
+      }
+      setEventLoading(false);
+    }
+    loadEvents();
+  }, [eventLocation]);
+
   const occ = getOccupancyForDate(selectedDate);
   const recs = hotel.roomTypes.map(rt => ({
     ...rt,
     ...getPriceRecommendation(rt, selectedDate, weather, occ.pct, benchmark),
   }));
-
   const superiorRec = recs.find(r => r.id === 'su') || recs[1];
 
   const date = new Date(selectedDate);
@@ -1204,7 +1165,7 @@ function PricingEngine({ hotel, benchmark }) {
   const mmdd = `${String(month).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   const isHoliday = SLO_HOLIDAYS.includes(mmdd);
 
-  const filteredEvents = DEMO_EVENTS.filter(ev => {
+  const filteredEvents = apiEvents.filter(ev => {
     const q = searchTerm.trim().toLowerCase();
     if (!q) return true;
     return (
@@ -1213,26 +1174,14 @@ function PricingEngine({ hotel, benchmark }) {
       ev.city.toLowerCase().includes(q) ||
       ev.event_type.toLowerCase().includes(q)
     );
-  }).filter(ev => ev.end_date >= selectedDate);
+  });
 
   async function generateReasoning() {
     setLoadingAI(true);
     setReasoning('');
     setGenerated(false);
 
-    const prompt = `Si AI revenue manager za hotel ${hotel.name} v ${hotel.location}.
-
-Analiziraj datum: ${selectedDate} (${dayOfWeek})
-Podatki za pricing:
-- Mesec: ${month} ${isPeak ? '(PEAK sezona)' : isWeekend ? '(vikend)' : ''}
-- Državni praznik: ${isHoliday ? 'DA' : 'NE'}
-- Zasedenost tega dne: ${occ.pct}% (${occ.rooms}/${hotel.rooms} sob)
-- Vreme: ${weather ? `${weather.tmax}°C max, ${weather.tmin}°C min, padavine ${weather.rain}mm` : 'Ni podatkov'}
-- Skupni cenovni premik: ${superiorRec.totalAdj > 0 ? '+' : ''}${superiorRec.totalAdj}%
-- Aktivni faktorji: ${superiorRec.factors.map(f => `${f.name} (${f.val > 0 ? '+' : ''}${Math.round(f.val * 100)}%)`).join(', ')}
-- Priporočene cene: ${recs.map(r => `${r.name} → €${r.price}`).join(', ')}
-
-Napiši strokovno analizo zakaj priporočamo te cene — v slovenščini, 4-5 stavkov. Razloži ZAKAJ, ne povzemaj cen.`;
+    const prompt = `Si AI revenue manager za hotel ${hotel.name} v ${hotel.location}. Napiši 4-5 stavkov strokovne analize v slovenščini.`;
 
     try {
       const res = await fetch('/api/ai', {
@@ -1254,12 +1203,7 @@ Napiši strokovno analizo zakaj priporočamo te cene — v slovenščini, 4-5 st
       <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, flexWrap: 'wrap' }}>
         <div>
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8892a8', marginBottom: 6 }}>Datum analize</div>
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={e => setSelectedDate(e.target.value)}
-            style={{ padding: '10px 14px', border: '1px solid #dde1eb', borderRadius: 8, fontFamily: 'Nunito', fontSize: 14, color: '#162040', maxWidth: '100%' }}
-          />
+          <input type="date" value={selectedDate} onChange={e => setSelectedDate(e.target.value)} style={{ padding: '10px 14px', border: '1px solid #dde1eb', borderRadius: 8, fontFamily: 'Nunito', fontSize: 14, color: '#162040', maxWidth: '100%' }} />
         </div>
         <div style={{ marginTop: 20, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <span className="chip">{dayOfWeek}</span>
@@ -1354,13 +1298,6 @@ Napiši strokovno analizo zakaj priporočamo te cene — v slovenščini, 4-5 st
                 <span className={`factor-val ${f.val > 0 ? 'pos' : f.val < 0 ? 'neg' : 'zero'}`}>{f.val > 0 ? '+' : ''}{Math.round(f.val * 100)}%</span>
               </div>
             ))}
-            <div className="factor-row" style={{ borderTop: '2px solid #dde1eb', marginTop: 4, paddingTop: 8, fontWeight: 700 }}>
-              <span>Skupni premik</span>
-              <span className={`factor-val ${superiorRec.totalAdj > 0 ? 'pos' : superiorRec.totalAdj < 0 ? 'neg' : 'zero'}`}>
-                {superiorRec.totalAdj > 0 ? '+' : ''}{superiorRec.totalAdj}%
-                {superiorRec.capped && ' ⚠ omejeno na ±15%'}
-              </span>
-            </div>
           </div>
         )}
 
@@ -1370,32 +1307,41 @@ Napiši strokovno analizo zakaj priporočamo te cene — v slovenščini, 4-5 st
           <div className="event-search">
             <input
               type="text"
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-              placeholder="Išči lokalne dogodke po imenu, lokaciji ali tipu..."
+              value={eventLocation}
+              onChange={e => setEventLocation(e.target.value)}
+              placeholder="Vnesi lokacijo, npr. Bled, Slovenia"
             />
-            {searchTerm && (
-              <button className="btn-sm" onClick={() => setSearchTerm('')}>Počisti</button>
-            )}
           </div>
 
+          <div className="event-search">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              placeholder="Išči dogodke po imenu, lokaciji ali tipu..."
+            />
+            {searchTerm && <button className="btn-sm" onClick={() => setSearchTerm('')}>Počisti</button>}
+          </div>
+
+          {eventLoading && <div className="empty-state">Nalagam dogodke …</div>}
+          {eventError && <div className="empty-state">{eventError}</div>}
+
           <div className="local-events">
-            {filteredEvents.length > 0 ? filteredEvents.map(ev => {
-              const impactPct = '+' + Math.round((ev.impact_multiplier - 1) * 100) + '%';
+            {!eventLoading && !eventError && filteredEvents.length > 0 ? filteredEvents.map(ev => {
               return (
                 <div key={ev.id} className="local-event-card">
                   <div className="local-event-main">
                     <div className="local-event-name">{ev.name}</div>
                     <div className="local-event-meta">
-                      {ev.city} · {ev.location} · {ev.event_type} · {ev.date} → {ev.end_date}
+                      {ev.city} · {ev.location} · {ev.event_type} · {ev.date}
                     </div>
                   </div>
-                  <span className="tag tag-med">{impactPct}</span>
+                  <span className="tag tag-med">API</span>
                 </div>
               );
-            }) : (
+            }) : !eventLoading && !eventError ? (
               <div className="empty-state">Ni dogodkov za izbrani kriterij.</div>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
@@ -1403,7 +1349,7 @@ Napiši strokovno analizo zakaj priporočamo te cene — v slovenščini, 4-5 st
       {(reasoning || loadingAI) && (
         <div className="ai-reasoning">
           <div className="ai-label"><span>⚡</span> MHC AI · Analiza priporočil</div>
-          {loadingAI ? <span className="ai-loading">Generiram analizo…</span> : reasoning}
+          {loadingAI ? <span>Generiram analizo…</span> : reasoning}
         </div>
       )}
 
@@ -1549,29 +1495,19 @@ function App() {
           {hotel.location}
           <div className="badge">DEMO / Vila Bled</div>
         </div>
-
         <div className="sidebar-nav">
           <div className="nav-section">Pogled</div>
-          <div className={`nav-item ${tab === 'dashboard' ? 'active' : ''}`} onClick={() => setTab('dashboard')}>
-            <span className="nav-icon">📈</span>Dashboard
-          </div>
-          <div className={`nav-item ${tab === 'pricing' ? 'active' : ''}`} onClick={() => setTab('pricing')}>
-            <span className="nav-icon">💶</span>Pricing Engine
-          </div>
-          <div className={`nav-item ${tab === 'competitors' ? 'active' : ''}`} onClick={() => setTab('competitors')}>
-            <span className="nav-icon">🎯</span>Competitor Radar
-          </div>
+          <div className={`nav-item ${tab === 'dashboard' ? 'active' : ''}`} onClick={() => setTab('dashboard')}><span className="nav-icon">📈</span>Dashboard</div>
+          <div className={`nav-item ${tab === 'pricing' ? 'active' : ''}`} onClick={() => setTab('pricing')}><span className="nav-icon">💶</span>Pricing Engine</div>
+          <div className={`nav-item ${tab === 'competitors' ? 'active' : ''}`} onClick={() => setTab('competitors')}><span className="nav-icon">🎯</span>Competitor Radar</div>
         </div>
-
         <div className="sidebar-footer">Admin · Demo račun</div>
       </aside>
 
       <main className="main">
         <div className="topbar">
           <div style={{ minWidth: 0 }}>
-            <div className="topbar-title">
-              {tab === 'dashboard' ? 'Dashboard' : tab === 'pricing' ? 'Pricing Engine' : 'Competitor Radar'}
-            </div>
+            <div className="topbar-title">{tab === 'dashboard' ? 'Dashboard' : tab === 'pricing' ? 'Pricing Engine' : 'Competitor Radar'}</div>
             <div className="topbar-meta">MHC Revenue · Upravljanje cen za hotel {hotel.name}</div>
           </div>
           <div className="topbar-actions">
