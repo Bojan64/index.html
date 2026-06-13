@@ -1,15 +1,17 @@
 // /api/ai.js — Vercel Serverless Function
-// Postavi v: твoj GitHub repo > /api/ai.js
-// Vercel environment variable: ANTHROPIC_API_KEY
 
 export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
-
-  // CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: 'Missing prompt' });
@@ -32,8 +34,7 @@ export default async function handler(req, res) {
     const data = await response.json();
     const text = data.content?.find(b => b.type === 'text')?.text || '';
     return res.status(200).json({ text });
-
   } catch (error) {
-    return res.status(500).json({ error: 'API call failed' });
+    return res.status(500).json({ error: 'API call failed', details: error.message });
   }
 }
